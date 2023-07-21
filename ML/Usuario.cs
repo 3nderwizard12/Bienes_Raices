@@ -9,9 +9,9 @@ namespace ML
 
         public string Password { get; set; } = null!;
 
-        public bool? Estatus { get; set; }
+        public bool Estatus { get; set; }
 
-        public ML.Vendedor? Vendor { get; set; }
+        public ML.Vendedor? vendedor { get; set; }
 
         public ML.Rol? Rol { get; set; }
 

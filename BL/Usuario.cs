@@ -13,7 +13,7 @@ namespace BL
             {
                 using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
                 {
-                    int query = cnn.Database.ExecuteSqlRaw($"UsuarioAdd '{usuario.Vendor.Nombre}', '{usuario.Vendor.ApellidoPaterno}', '{usuario.Vendor.ApellidoMaterno}', '{usuario.Vendor.Curp}', '{usuario.Vendor.Rfc}', '{usuario.Vendor.Foto}', '{usuario.Vendor.Email}', '{usuario.Vendor.Celular}', '{usuario.Username}', '{usuario.Password}', {usuario.Rol.IdRol}");
+                    int query = cnn.Database.ExecuteSqlRaw($"UsuarioAdd '{usuario.vendedor.Nombre}', '{usuario.vendedor.ApellidoPaterno}', '{usuario.vendedor.ApellidoMaterno}', '{usuario.vendedor.Curp}', '{usuario.vendedor.Rfc}', '{usuario.vendedor.Foto}', '{usuario.vendedor.Email}', '{usuario.vendedor.Celular}', '{usuario.Username}', '{usuario.Password}', {usuario.Rol.IdRol}");
 
                     if (query > 0)
                     {
@@ -39,7 +39,7 @@ namespace BL
             {
                 using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
                 {
-                    int query = cnn.Database.ExecuteSqlRaw($"UsuarioDelete {usuario.Vendor.Vendedores}");
+                    int query = cnn.Database.ExecuteSqlRaw($"UsuarioDelete {usuario.vendedor.Vendedores}");
 
                     if (query > 0)
                     {
@@ -65,7 +65,7 @@ namespace BL
             {
                 using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
                 {
-                    int query = cnn.Database.ExecuteSqlRaw($"UsuarioAdd {usuario.Vendor.IdVendedor}, '{usuario.Vendor.Nombre}', '{usuario.Vendor.ApellidoPaterno}', '{usuario.Vendor.ApellidoMaterno}', '{usuario.Vendor.Curp}', '{usuario.Vendor.Rfc}', '{usuario.Vendor.Foto}', '{usuario.Vendor.Email}', '{usuario.Vendor.Celular}', '{usuario.Username}', '{usuario.Password}', {usuario.Rol.IdRol}");
+                    int query = cnn.Database.ExecuteSqlRaw($"UsuarioAdd {usuario.vendedor.IdVendedor}, '{usuario.vendedor.Nombre}', '{usuario.vendedor.ApellidoPaterno}', '{usuario.vendedor.ApellidoMaterno}', '{usuario.vendedor.Curp}', '{usuario.vendedor.Rfc}', '{usuario.vendedor.Foto}', '{usuario.vendedor.Email}', '{usuario.vendedor.Celular}', '{usuario.Username}', '{usuario.Password}', {usuario.Rol.IdRol}");
 
                     if (query > 0)
                     {
@@ -117,7 +117,7 @@ namespace BL
             {
                 using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
                 {
-                    var query = cnn.Usuarios.FromSqlRaw($"UsuarioGetAll '{usuario.Vendor.Nombre}', '{usuario.Vendor.ApellidoPaterno}', '{usuario.Vendor.ApellidoMaterno}'").ToList();
+                    var query = cnn.Usuarios.FromSqlRaw($"UsuarioGetAll '{usuario.vendedor.Nombre}', '{usuario.vendedor.ApellidoPaterno}', '{usuario.vendedor.ApellidoMaterno}'").ToList();
 
                     result.Objects = new List<object>();
 
@@ -125,22 +125,22 @@ namespace BL
                     {
                         foreach (var row in query)
                         {
-                            usuario.Vendor = new ML.Vendedor();
-                            usuario.Vendor.IdVendedor = row.IdVendedor;
-                            usuario.Vendor.Nombre = row.Nombre;
-                            usuario.Vendor.ApellidoPaterno = row.ApellidoPaterno;
-                            usuario.Vendor.ApellidoMaterno = row.ApellidoMaterno;
-                            usuario.Vendor.Curp = row.Curp;
-                            usuario.Vendor.Rfc = row.Rfc;
-                            usuario.Vendor.Foto = row.Foto;
-                            usuario.Vendor.Email = row.Email;
-                            usuario.Vendor.Celular = row.Celular;
+                            usuario.vendedor = new ML.Vendedor();
+                            usuario.vendedor.IdVendedor = row.IdVendedor;
+                            usuario.vendedor.Nombre = row.Nombre;
+                            usuario.vendedor.ApellidoPaterno = row.ApellidoPaterno;
+                            usuario.vendedor.ApellidoMaterno = row.ApellidoMaterno;
+                            usuario.vendedor.Curp = row.Curp;
+                            usuario.vendedor.Rfc = row.Rfc;
+                            usuario.vendedor.Foto = row.Foto;
+                            usuario.vendedor.Email = row.Email;
+                            usuario.vendedor.Celular = row.Celular;
 
                             usuario = new ML.Usuario();
                             usuario.IdUsuario = row.IdUsuario;
                             usuario.Username = row.Username;
                             usuario.Password = row.Password;
-                            usuario.Estatus = row.Estatus;
+                            usuario.Estatus = row.Estatus.Value;
 
                             usuario.Rol = new ML.Rol();
                             usuario.Rol.IdRol = row.IdRol;
@@ -178,22 +178,22 @@ namespace BL
                     {
                         ML.Usuario usuario = new ML.Usuario();
 
-                        usuario.Vendor = new ML.Vendedor();
-                        usuario.Vendor.IdVendedor = query.IdVendedor;
-                        usuario.Vendor.Nombre = query.Nombre;
-                        usuario.Vendor.ApellidoPaterno = query.ApellidoPaterno;
-                        usuario.Vendor.ApellidoMaterno = query.ApellidoMaterno;
-                        usuario.Vendor.Curp = query.Curp;
-                        usuario.Vendor.Rfc = query.Rfc;
-                        usuario.Vendor.Foto = query.Foto;
-                        usuario.Vendor.Email = query.Email;
-                        usuario.Vendor.Celular = query.Celular;
+                        usuario.vendedor = new ML.Vendedor();
+                        usuario.vendedor.IdVendedor = query.IdVendedor;
+                        usuario.vendedor.Nombre = query.Nombre;
+                        usuario.vendedor.ApellidoPaterno = query.ApellidoPaterno;
+                        usuario.vendedor.ApellidoMaterno = query.ApellidoMaterno;
+                        usuario.vendedor.Curp = query.Curp;
+                        usuario.vendedor.Rfc = query.Rfc;
+                        usuario.vendedor.Foto = query.Foto;
+                        usuario.vendedor.Email = query.Email;
+                        usuario.vendedor.Celular = query.Celular;
 
                         usuario = new ML.Usuario();
                         usuario.IdUsuario = query.IdUsuario;
                         usuario.Username = query.Username;
                         usuario.Password = query.Password;
-                        usuario.Estatus = query.Estatus;
+                        usuario.Estatus = query.Estatus.Value;
 
                         usuario.Rol = new ML.Rol();
                         usuario.Rol.IdRol = query.IdRol;
@@ -230,22 +230,22 @@ namespace BL
                     {
                         ML.Usuario usuario = new ML.Usuario();
 
-                        usuario.Vendor = new ML.Vendedor();
-                        usuario.Vendor.IdVendedor = query.IdVendedor;
-                        usuario.Vendor.Nombre = query.Nombre;
-                        usuario.Vendor.ApellidoPaterno = query.ApellidoPaterno;
-                        usuario.Vendor.ApellidoMaterno = query.ApellidoMaterno;
-                        usuario.Vendor.Curp = query.Curp;
-                        usuario.Vendor.Rfc = query.Rfc;
-                        usuario.Vendor.Foto = query.Foto;
-                        usuario.Vendor.Email = query.Email;
-                        usuario.Vendor.Celular = query.Celular;
+                        usuario.vendedor = new ML.Vendedor();
+                        usuario.vendedor.IdVendedor = query.IdVendedor;
+                        usuario.vendedor.Nombre = query.Nombre;
+                        usuario.vendedor.ApellidoPaterno = query.ApellidoPaterno;
+                        usuario.vendedor.ApellidoMaterno = query.ApellidoMaterno;
+                        usuario.vendedor.Curp = query.Curp;
+                        usuario.vendedor.Rfc = query.Rfc;
+                        usuario.vendedor.Foto = query.Foto;
+                        usuario.vendedor.Email = query.Email;
+                        usuario.vendedor.Celular = query.Celular;
 
                         usuario = new ML.Usuario();
                         usuario.IdUsuario = query.IdUsuario;
                         usuario.Username = query.Username;
                         usuario.Password = query.Password;
-                        usuario.Estatus = query.Estatus;
+                        usuario.Estatus = query.Estatus.Value;
 
                         usuario.Rol = new ML.Rol();
                         usuario.Rol.IdRol = query.IdRol;

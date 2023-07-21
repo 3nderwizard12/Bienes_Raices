@@ -53,7 +53,7 @@ namespace PL.Controllers
         public ActionResult GetAll(ML.Usuario resultUsuario)
         {
             resultUsuario.Usuarios = new List<object>();
-            resultUsuario.Vendor = new ML.Vendedor();
+            resultUsuario.vendedor = new ML.Vendedor();
 
             using (var client = new HttpClient())
             {
@@ -128,13 +128,13 @@ namespace PL.Controllers
         [HttpPost]
         public ActionResult Form(ML.Usuario usuario)
         {
-            usuario.Vendor = new ML.Vendedor();
+            usuario.vendedor = new ML.Vendedor();
 
             IFormFile file = Request.Form.Files["inpImagen"];
 
             if (file != null)
             {
-                usuario.Vendor.Foto = Convert.ToBase64String(ConvertToBytes(file));
+                usuario.vendedor.Foto = Convert.ToBase64String(ConvertToBytes(file));
             }
 
             if (usuario.IdUsuario == 0)

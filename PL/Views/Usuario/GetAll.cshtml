@@ -1,0 +1,161 @@
+﻿@model ML.Usuario
+@{
+    ViewBag.Title = "GetAll";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    //Layout = null; no top menu
+}
+
+<div class="container">
+    <section>
+        <h2>Módulo</h2>
+
+        <div class="col-md-12">
+            @using (Html.BeginForm("GetAll", "Usuario", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <div class="row">
+
+                    <div class="col">
+                        @Html.LabelFor(model => model.vendedor.Nombre)
+
+                        @Html.TextBoxFor(model => model.vendedor.Nombre, new { @class = "form-control", @id = "txtNombre", @onkeypress = "SoloLetras(event, 'txtNombre', 'lblNombre')" })
+
+                        @Html.ValidationMessageFor(model => model.vendedor.Nombre, null, new { @class = "text-danger" })
+                        @Html.Label(null, "", new { @id = "lblNombre" })
+                    </div>
+
+                    <div class="col">
+                        @Html.LabelFor(model => model.vendedor.ApellidoPaterno)
+
+                        @Html.TextBoxFor(model => model.vendedor.ApellidoPaterno, new { @class = "form-control", @id = "txtApellidoPaterno", @onkeypress = "SoloLetras(event, 'txtApellidoPaterno', 'lblApellidoPaterno')" })
+
+                        @Html.ValidationMessageFor(model => model.vendedor.ApellidoPaterno, null, new { @class = "text-danger" })
+                        @Html.Label(null, "", new { @id = "lblApellidoPaterno" })
+                    </div>
+
+                    <div class="col">
+                        @Html.LabelFor(model => model.vendedor.ApellidoMaterno)
+
+                        @Html.TextBoxFor(model => model.vendedor.ApellidoMaterno, new { @class = "form-control", @id = "txtApellidoMaterno", @onkeypress = "SoloLetras(event, 'txtApellidoMaterno', 'lblApellidoMaterno')", @autocomplete = "off" })
+
+                        @Html.ValidationMessageFor(model => model.vendedor.ApellidoMaterno, null, new { @class = "text-danger" })
+                        @Html.Label(null, "", new { @id = "lblApellidoMaterno" })
+                    </div>
+
+                </div>
+                <div class="col text-center">
+
+                    <input type="submit" value="Buscar" class="btn btn-info " />
+
+                </div>
+            }
+        </div>
+
+    </section>
+    <section>
+        <div class="row">
+
+            <div style="float:left;">
+                @Html.ActionLink("Agregar", "Form", "Usuario", htmlAttributes: new { @class = "btn btn-success bi bi-person-plus-fill" })
+            </div>
+        </div>
+
+    </section>
+
+    <section>
+        @if (Model.Usuarios == null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @ViewBag.Message
+            </div>
+        }
+        <div class="overflow-auto">
+            <table id="dtHorizontalVerticalExample" class="table table-bordered table-responsive">
+                <thead>
+                    <tr>
+                        <td class="text-center" style=" font-weight:bold;">Editar</td>
+
+                        <td class="visually-hidden">IdVendedor</td>
+                        <td class="text-center" style="font-weight:bold;">Nombre completo</td>
+                        <td class="text-center" style="font-weight:bold;">Curp</td>
+                        <td class="text-center" style="font-weight:bold;">Rfc</td>
+                        <td class="text-center" style="font-weight:bold;">Foto</td>
+                        <td class="text-center" style="font-weight:bold;">Email</td>
+                        <td class="text-center" style="font-weight:bold;">Celular</td>
+                        <td class="visually-hidden">IdVendedor</td>
+                        <td class="text-center" style="font-weight:bold;">Username</td>
+                        <td class="text-center" style="font-weight:bold;">Password</td>
+                        <td class="text-center" style="font-weight:bold;">Estatus</td>
+                        <td class="visually-hidden">IdRol</td>
+                        <td class="text-center" style="font-weight:bold;">Rol</td>
+
+                        <td class="text-center" style=" font-weight:bold;">Eliminar</td>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (ML.Usuario usuario in Model.Usuarios)
+                    {
+                        <tr>
+                            <td class="text-center"><a class="btn btn-warning bi bi-pencil-square" href="@Url.Action("Form", "Usuario", new { idUsuario = usuario.IdUsuario})"></a></td>
+                            <td class="visually-hidden">@usuario.vendedor.IdVendedor</td>
+                            <td class="text-center">@usuario.vendedor.Nombre @usuario.vendedor.ApellidoPaterno @usuario.vendedor.ApellidoMaterno</td>
+                            <td class="text-center">@usuario.vendedor.Curp</td>
+                            <td class="text-center">@usuario.vendedor.Rfc</td>
+                            @if (usuario.vendedor.Foto == null || usuario.vendedor.Foto == "")
+                            {
+                                <td class="text-center"><img src="~/Images/guest-user.png" width="50px" height="50px" /></td>
+                            }
+                            else
+                            {
+                                <td> <img id="Img" src="data:image/*;base64,@usuario.vendedor.Foto" style="width:50px ; height:50px" /></td>
+                            }
+                            <td class="text-center">@usuario.vendedor.Email</td>
+                            <td class="text-center">@usuario.vendedor.Celular</td>
+                            <td class="visually-hidden">@usuario.IdUsuario</td>
+                            <td class="text-center">@usuario.Username</td>
+                            <td class="text-center">@usuario.Password</td>
+                            @if (usuario.Estatus)
+                            {
+                                <td style="text-align: center; vertical-align: middle;">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" checked onchange="ChangeStatus(@usuario.IdUsuario, this)">
+                                    </div>
+                                </td>
+                            }
+                            else
+                            {
+                                <td style="text-align: center; vertical-align: middle;">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" onchange="ChangeStatus(@usuario.IdUsuario, this);">
+                                    </div>
+                                </td>
+                            }
+                            <td class="visually-hidden">@usuario.Rol.IdRol</td>
+                            <td class="text-center">@usuario.Rol.Nombre</td>
+                            <td class="text-center"><a class="btn btn-danger bi bi-trash" href="@Url.Action("Delete", "Usuario", new { idUsuario = usuario.IdUsuario})" onclick="return confirm('Estas seguro que deseas eliminar este registro?');"></a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+@section Scripts {
+    <script type="text/javascript">
+        function ChangeStatus(idAlumno, e) {
+            var status = e.checked
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("CambiarStatus")',
+                dataType: 'json',
+                data: { idAlumno, status },
+                success: {},
+                error: function (ex) {
+                    alert('Failed.' + ex);
+                }
+            });
+        }
+    </script>
+}

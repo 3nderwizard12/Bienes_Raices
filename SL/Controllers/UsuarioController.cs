@@ -27,7 +27,7 @@ namespace SL.Controllers
         [HttpPost]
         public IActionResult GetAll([FromBody] ML.Usuario usuario)
         {
-            usuario.Vendor = new ML.Vendedor();
+            usuario.vendedor = new ML.Vendedor();
 
             ML.Result result = BL.Usuario.GetAll(usuario);
 
