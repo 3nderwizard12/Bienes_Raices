@@ -285,7 +285,16 @@ namespace PL.Controllers
         public ActionResult GenerarJson()
         {
             ML.Result result = BL.Usuario.GenerarJson(HttpContext.Session.GetString("txtJson").ToString());
-            return View();
+            HttpContext.Session.Clear();
+            if (result.Correct)
+            {
+                ViewBag.Message = "Json Creado Correctamente";
+            }
+            else
+            {
+                ViewBag.Message = "Error al crear";
+            }
+            return PartialView("Modal");
         }
     }
 }
