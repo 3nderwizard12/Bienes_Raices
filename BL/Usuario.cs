@@ -269,24 +269,5 @@ namespace BL
             }
             return result;
         }
-
-        public static ML.Result GenerarJson(string json)
-        {
-            ML.Result result = new ML.Result();
-
-            try
-            {
-                File.WriteAllText(@"/Users/ender/Documents/GitHub/Bienes_Raices/PL/TxtJson","["+ json + "]");
-            }
-            catch (Exception ex)
-            {
-                result.Correct = false;
-                result.Ex = ex;
-                result.ErrorMessage = "An error ocurred while inserting the record into the table" + result.Ex;
-                //throw;
-            }
-            
-            return result;
-        }
     }
 }

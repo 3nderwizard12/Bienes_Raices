@@ -153,14 +153,14 @@ namespace PL.Controllers
 
                     var postTask = client.PostAsJsonAsync<ML.Usuario>("Usuario/Add/", usuario);
 
-                    if (HttpContext.Session.GetString("txtJson").ToString() == string.Empty)
-                    {
-                        HttpContext.Session.SetString("txtJson", JsonConvert.SerializeObject(usuario));
-                    }
-                    else
-                    {
-                        HttpContext.Session.SetString("txtJson", HttpContext.Session.GetString("txtJson").ToString() + "," + JsonConvert.SerializeObject(usuario));
-                    }
+                    //if (HttpContext.Session.GetString("txtJson").ToString() == string.Empty)
+                    //{
+                    //    HttpContext.Session.SetString("txtJson", JsonConvert.SerializeObject(usuario));
+                    //}
+                    //else
+                    //{
+                    //    HttpContext.Session.SetString("txtJson", HttpContext.Session.GetString("txtJson").ToString() + "," + JsonConvert.SerializeObject(usuario));
+                    //}
                     
                     postTask.Wait();
 
@@ -173,7 +173,7 @@ namespace PL.Controllers
                     }
                     else
                     {
-                        ViewBag.Message = "Ocurrio un error al actualizar el registro";
+                        ViewBag.Message = "Ocurrio un error al Insertar el registro";
                         return PartialView("Modal");
                     }
                 }
@@ -279,22 +279,6 @@ namespace PL.Controllers
                 ViewBag.Message = "Usuario Invalido";
                 return PartialView("ModalLogin");
             }
-        }
-
-        [HttpGet]
-        public ActionResult GenerarJson()
-        {
-            ML.Result result = BL.Usuario.GenerarJson(HttpContext.Session.GetString("txtJson").ToString());
-            HttpContext.Session.Clear();
-            if (result.Correct)
-            {
-                ViewBag.Message = "Json Creado Correctamente";
-            }
-            else
-            {
-                ViewBag.Message = "Error al crear";
-            }
-            return PartialView("Modal");
         }
     }
 }
