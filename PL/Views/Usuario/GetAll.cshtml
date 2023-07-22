@@ -15,30 +15,21 @@
                 <div class="row">
 
                     <div class="col">
-                        @Html.LabelFor(model => model.vendedor.Nombre)
+                        @Html.LabelFor(model => model.Vendedor.Nombre)
 
-                        @Html.TextBoxFor(model => model.vendedor.Nombre, new { @class = "form-control", @id = "txtNombre", @onkeypress = "SoloLetras(event, 'txtNombre', 'lblNombre')" })
-
-                        @Html.ValidationMessageFor(model => model.vendedor.Nombre, null, new { @class = "text-danger" })
-                        @Html.Label(null, "", new { @id = "lblNombre" })
+                        @Html.TextBoxFor(model => model.Vendedor.Nombre, new { @class = "form-control" })
                     </div>
 
                     <div class="col">
-                        @Html.LabelFor(model => model.vendedor.ApellidoPaterno)
+                        @Html.LabelFor(model => model.Vendedor.ApellidoPaterno)
 
-                        @Html.TextBoxFor(model => model.vendedor.ApellidoPaterno, new { @class = "form-control", @id = "txtApellidoPaterno", @onkeypress = "SoloLetras(event, 'txtApellidoPaterno', 'lblApellidoPaterno')" })
-
-                        @Html.ValidationMessageFor(model => model.vendedor.ApellidoPaterno, null, new { @class = "text-danger" })
-                        @Html.Label(null, "", new { @id = "lblApellidoPaterno" })
+                        @Html.TextBoxFor(model => model.Vendedor.ApellidoPaterno, new { @class = "form-control" })
                     </div>
 
                     <div class="col">
-                        @Html.LabelFor(model => model.vendedor.ApellidoMaterno)
+                        @Html.LabelFor(model => model.Vendedor.ApellidoMaterno)
 
-                        @Html.TextBoxFor(model => model.vendedor.ApellidoMaterno, new { @class = "form-control", @id = "txtApellidoMaterno", @onkeypress = "SoloLetras(event, 'txtApellidoMaterno', 'lblApellidoMaterno')", @autocomplete = "off" })
-
-                        @Html.ValidationMessageFor(model => model.vendedor.ApellidoMaterno, null, new { @class = "text-danger" })
-                        @Html.Label(null, "", new { @id = "lblApellidoMaterno" })
+                        @Html.TextBoxFor(model => model.Vendedor.ApellidoMaterno, new { @class = "form-control" })
                     </div>
 
                 </div>
@@ -88,7 +79,7 @@
                         <td class="visually-hidden">IdRol</td>
                         <td class="text-center" style="font-weight:bold;">Rol</td>
 
-                        <td class="text-center" style=" font-weight:bold;">Eliminar</td>
+                        @*<td class="text-center" style=" font-weight:bold;">Eliminar</td>*@
                     </tr>
                 </thead>
                 <tbody>
@@ -97,20 +88,20 @@
                     {
                         <tr>
                             <td class="text-center"><a class="btn btn-warning bi bi-pencil-square" href="@Url.Action("Form", "Usuario", new { idUsuario = usuario.IdUsuario})"></a></td>
-                            <td class="visually-hidden">@usuario.vendedor.IdVendedor</td>
-                            <td class="text-center">@usuario.vendedor.Nombre @usuario.vendedor.ApellidoPaterno @usuario.vendedor.ApellidoMaterno</td>
-                            <td class="text-center">@usuario.vendedor.Curp</td>
-                            <td class="text-center">@usuario.vendedor.Rfc</td>
-                            @if (usuario.vendedor.Foto == null || usuario.vendedor.Foto == "")
+                            <td class="visually-hidden">@usuario.Vendedor.IdVendedor</td>
+                            <td class="text-center">@usuario.Vendedor.Nombre @usuario.Vendedor.ApellidoPaterno @usuario.Vendedor.ApellidoMaterno</td>
+                            <td class="text-center">@usuario.Vendedor.Curp</td>
+                            <td class="text-center">@usuario.Vendedor.Rfc</td>
+                            @if (usuario.Vendedor.Foto == null || usuario.Vendedor.Foto == "")
                             {
                                 <td class="text-center"><img src="~/Images/guest-user.png" width="50px" height="50px" /></td>
                             }
                             else
                             {
-                                <td> <img id="Img" src="data:image/*;base64,@usuario.vendedor.Foto" style="width:50px ; height:50px" /></td>
+                                <td> <img id="Img" src="data:image/*;base64,@usuario.Vendedor.Foto" style="width:50px ; height:50px" /></td>
                             }
-                            <td class="text-center">@usuario.vendedor.Email</td>
-                            <td class="text-center">@usuario.vendedor.Celular</td>
+                            <td class="text-center">@usuario.Vendedor.Email</td>
+                            <td class="text-center">@usuario.Vendedor.Celular</td>
                             <td class="visually-hidden">@usuario.IdUsuario</td>
                             <td class="text-center">@usuario.Username</td>
                             <td class="text-center">@usuario.Password</td>
@@ -132,13 +123,24 @@
                             }
                             <td class="visually-hidden">@usuario.Rol.IdRol</td>
                             <td class="text-center">@usuario.Rol.Nombre</td>
-                            <td class="text-center"><a class="btn btn-danger bi bi-trash" href="@Url.Action("Delete", "Usuario", new { idUsuario = usuario.IdUsuario})" onclick="return confirm('Estas seguro que deseas eliminar este registro?');"></a></td>
+                            @*<td class="text-center"><a class="btn btn-danger bi bi-trash" href="@Url.Action("Delete", "Usuario", new { idUsuario = usuario.IdUsuario})" onclick="return confirm('Estas seguro que deseas eliminar este registro?');"></a></td>*@
                         </tr>
                     }
                 </tbody>
             </table>
         </div>
     </section>
+    @using (Html.BeginForm("GenerarJson", "Usuario", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div class="row" id="input">
+            <div class="row g-3">
+                <div class="col-md-1">
+                    <a><input type="submit" value="Capturar" class="btn btn-outline-success border" style="border-radius: 20px" /></a>
+                    <br />
+                </div>
+            </div>
+        </div>
+    }
 </div>
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>

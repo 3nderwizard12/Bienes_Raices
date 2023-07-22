@@ -3,6 +3,10 @@ namespace ML
 {
 	public class Result
 	{
+        public Result()
+        {
+
+        }
         public bool Correct { get; set; }
 
         public string ErrorMessage { get; set; } = string.Empty;

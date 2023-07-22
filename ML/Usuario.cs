@@ -11,7 +11,7 @@ namespace ML
 
         public bool Estatus { get; set; }
 
-        public ML.Vendedor? vendedor { get; set; }
+        public ML.Vendedor? Vendedor { get; set; }
 
         public ML.Rol? Rol { get; set; }
 

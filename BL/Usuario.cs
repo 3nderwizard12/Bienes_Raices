@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Net.Http;
+using DL;
 using Microsoft.EntityFrameworkCore;
 
 namespace BL
@@ -13,7 +15,7 @@ namespace BL
             {
                 using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
                 {
-                    int query = cnn.Database.ExecuteSqlRaw($"UsuarioAdd '{usuario.vendedor.Nombre}', '{usuario.vendedor.ApellidoPaterno}', '{usuario.vendedor.ApellidoMaterno}', '{usuario.vendedor.Curp}', '{usuario.vendedor.Rfc}', '{usuario.vendedor.Foto}', '{usuario.vendedor.Email}', '{usuario.vendedor.Celular}', '{usuario.Username}', '{usuario.Password}', {usuario.Rol.IdRol}");
+                    int query = cnn.Database.ExecuteSqlRaw($"UsuarioAdd '{usuario.Vendedor.Nombre}', '{usuario.Vendedor.ApellidoPaterno}', '{usuario.Vendedor.ApellidoMaterno}', '{usuario.Vendedor.Curp}', '{usuario.Vendedor.Rfc}', '{usuario.Vendedor.Foto}', '{usuario.Vendedor.Email}', '{usuario.Vendedor.Celular}', '{usuario.Username}', '{usuario.Password}', {usuario.Rol.IdRol}");
 
                     if (query > 0)
                     {
@@ -35,11 +37,13 @@ namespace BL
         {
             ML.Result result = new ML.Result();
 
+            usuario.Vendedor = new ML.Vendedor();
+
             try
             {
                 using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
                 {
-                    int query = cnn.Database.ExecuteSqlRaw($"UsuarioDelete {usuario.vendedor.Vendedores}");
+                    int query = cnn.Database.ExecuteSqlRaw($"UsuarioDelete {usuario.Vendedor.Vendedores}");
 
                     if (query > 0)
                     {
@@ -65,7 +69,7 @@ namespace BL
             {
                 using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
                 {
-                    int query = cnn.Database.ExecuteSqlRaw($"UsuarioAdd {usuario.vendedor.IdVendedor}, '{usuario.vendedor.Nombre}', '{usuario.vendedor.ApellidoPaterno}', '{usuario.vendedor.ApellidoMaterno}', '{usuario.vendedor.Curp}', '{usuario.vendedor.Rfc}', '{usuario.vendedor.Foto}', '{usuario.vendedor.Email}', '{usuario.vendedor.Celular}', '{usuario.Username}', '{usuario.Password}', {usuario.Rol.IdRol}");
+                    int query = cnn.Database.ExecuteSqlRaw($"UsuarioUpdate {usuario.Vendedor.IdVendedor}, '{usuario.Vendedor.Nombre}', '{usuario.Vendedor.ApellidoPaterno}', '{usuario.Vendedor.ApellidoMaterno}', '{usuario.Vendedor.Curp}', '{usuario.Vendedor.Rfc}', '{usuario.Vendedor.Foto}', '{usuario.Vendedor.Email}', '{usuario.Vendedor.Celular}', '{usuario.Username}', '{usuario.Password}', {usuario.Rol.IdRol}");
 
                     if (query > 0)
                     {
@@ -117,7 +121,7 @@ namespace BL
             {
                 using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
                 {
-                    var query = cnn.Usuarios.FromSqlRaw($"UsuarioGetAll '{usuario.vendedor.Nombre}', '{usuario.vendedor.ApellidoPaterno}', '{usuario.vendedor.ApellidoMaterno}'").ToList();
+                    var query = cnn.Usuarios.FromSqlRaw($"UsuarioGetAll '{usuario.Vendedor.Nombre}', '{usuario.Vendedor.ApellidoPaterno}', '{usuario.Vendedor.ApellidoPaterno}'").ToList();
 
                     result.Objects = new List<object>();
 
@@ -125,22 +129,22 @@ namespace BL
                     {
                         foreach (var row in query)
                         {
-                            usuario.vendedor = new ML.Vendedor();
-                            usuario.vendedor.IdVendedor = row.IdVendedor;
-                            usuario.vendedor.Nombre = row.Nombre;
-                            usuario.vendedor.ApellidoPaterno = row.ApellidoPaterno;
-                            usuario.vendedor.ApellidoMaterno = row.ApellidoMaterno;
-                            usuario.vendedor.Curp = row.Curp;
-                            usuario.vendedor.Rfc = row.Rfc;
-                            usuario.vendedor.Foto = row.Foto;
-                            usuario.vendedor.Email = row.Email;
-                            usuario.vendedor.Celular = row.Celular;
-
                             usuario = new ML.Usuario();
                             usuario.IdUsuario = row.IdUsuario;
                             usuario.Username = row.Username;
                             usuario.Password = row.Password;
                             usuario.Estatus = row.Estatus.Value;
+
+                            usuario.Vendedor = new ML.Vendedor();
+                            usuario.Vendedor.IdVendedor = row.IdVendedor;
+                            usuario.Vendedor.Nombre = row.Nombre;
+                            usuario.Vendedor.ApellidoPaterno = row.ApellidoPaterno;
+                            usuario.Vendedor.ApellidoMaterno = row.ApellidoMaterno;
+                            usuario.Vendedor.Curp = row.Curp;
+                            usuario.Vendedor.Rfc = row.Rfc;
+                            usuario.Vendedor.Foto = row.Foto;
+                            usuario.Vendedor.Email = row.Email;
+                            usuario.Vendedor.Celular = row.Celular;
 
                             usuario.Rol = new ML.Rol();
                             usuario.Rol.IdRol = row.IdRol;
@@ -167,7 +171,6 @@ namespace BL
         {
             ML.Result result = new ML.Result();
 
-
             try
             {
                 using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
@@ -178,22 +181,22 @@ namespace BL
                     {
                         ML.Usuario usuario = new ML.Usuario();
 
-                        usuario.vendedor = new ML.Vendedor();
-                        usuario.vendedor.IdVendedor = query.IdVendedor;
-                        usuario.vendedor.Nombre = query.Nombre;
-                        usuario.vendedor.ApellidoPaterno = query.ApellidoPaterno;
-                        usuario.vendedor.ApellidoMaterno = query.ApellidoMaterno;
-                        usuario.vendedor.Curp = query.Curp;
-                        usuario.vendedor.Rfc = query.Rfc;
-                        usuario.vendedor.Foto = query.Foto;
-                        usuario.vendedor.Email = query.Email;
-                        usuario.vendedor.Celular = query.Celular;
-
                         usuario = new ML.Usuario();
                         usuario.IdUsuario = query.IdUsuario;
                         usuario.Username = query.Username;
                         usuario.Password = query.Password;
                         usuario.Estatus = query.Estatus.Value;
+
+                        usuario.Vendedor = new ML.Vendedor();
+                        usuario.Vendedor.IdVendedor = query.IdVendedor;
+                        usuario.Vendedor.Nombre = query.Nombre;
+                        usuario.Vendedor.ApellidoPaterno = query.ApellidoPaterno;
+                        usuario.Vendedor.ApellidoMaterno = query.ApellidoMaterno;
+                        usuario.Vendedor.Curp = query.Curp;
+                        usuario.Vendedor.Rfc = query.Rfc;
+                        usuario.Vendedor.Foto = query.Foto;
+                        usuario.Vendedor.Email = query.Email;
+                        usuario.Vendedor.Celular = query.Celular;
 
                         usuario.Rol = new ML.Rol();
                         usuario.Rol.IdRol = query.IdRol;
@@ -230,22 +233,22 @@ namespace BL
                     {
                         ML.Usuario usuario = new ML.Usuario();
 
-                        usuario.vendedor = new ML.Vendedor();
-                        usuario.vendedor.IdVendedor = query.IdVendedor;
-                        usuario.vendedor.Nombre = query.Nombre;
-                        usuario.vendedor.ApellidoPaterno = query.ApellidoPaterno;
-                        usuario.vendedor.ApellidoMaterno = query.ApellidoMaterno;
-                        usuario.vendedor.Curp = query.Curp;
-                        usuario.vendedor.Rfc = query.Rfc;
-                        usuario.vendedor.Foto = query.Foto;
-                        usuario.vendedor.Email = query.Email;
-                        usuario.vendedor.Celular = query.Celular;
-
                         usuario = new ML.Usuario();
                         usuario.IdUsuario = query.IdUsuario;
                         usuario.Username = query.Username;
                         usuario.Password = query.Password;
                         usuario.Estatus = query.Estatus.Value;
+
+                        usuario.Vendedor = new ML.Vendedor();
+                        usuario.Vendedor.IdVendedor = query.IdVendedor;
+                        usuario.Vendedor.Nombre = query.Nombre;
+                        usuario.Vendedor.ApellidoPaterno = query.ApellidoPaterno;
+                        usuario.Vendedor.ApellidoMaterno = query.ApellidoMaterno;
+                        usuario.Vendedor.Curp = query.Curp;
+                        usuario.Vendedor.Rfc = query.Rfc;
+                        usuario.Vendedor.Foto = query.Foto;
+                        usuario.Vendedor.Email = query.Email;
+                        usuario.Vendedor.Celular = query.Celular;
 
                         usuario.Rol = new ML.Rol();
                         usuario.Rol.IdRol = query.IdRol;
@@ -266,6 +269,24 @@ namespace BL
             }
             return result;
         }
+
+        public static ML.Result GenerarJson(string json)
+        {
+            ML.Result result = new ML.Result();
+
+            try
+            {
+                File.WriteAllText(@"/Users/ender/Documents/GitHub/Bienes_Raices/PL/TxtJson","["+ json + "]");
+            }
+            catch (Exception ex)
+            {
+                result.Correct = false;
+                result.Ex = ex;
+                result.ErrorMessage = "An error ocurred while inserting the record into the table" + result.Ex;
+                //throw;
+            }
+            
+            return result;
+        }
     }
 }
-

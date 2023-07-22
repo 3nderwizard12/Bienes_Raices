@@ -1,8 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ML;
+using Newtonsoft.Json;
+using System.Text;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace PL.Controllers
@@ -22,6 +28,8 @@ namespace PL.Controllers
         public ActionResult GetAll()
         {
             ML.Usuario resultUsuario = new ML.Usuario();
+            resultUsuario.Vendedor = new Vendedor();
+
             resultUsuario.Usuarios = new List<object>();
 
             using (var client = new HttpClient())
@@ -29,7 +37,7 @@ namespace PL.Controllers
                 string urlApi = configuration["urlWebApi"];
                 client.BaseAddress = new Uri(urlApi);
 
-                var responseTask = client.GetAsync("Usuario/GetAll");
+                var responseTask = client.GetAsync("Usuario/GetAll/" + resultUsuario);
                 responseTask.Wait();
 
                 var result = responseTask.Result;
@@ -49,36 +57,34 @@ namespace PL.Controllers
             return View(resultUsuario);
         }
 
-        [HttpPost]
-        public ActionResult GetAll(ML.Usuario resultUsuario)
-        {
-            resultUsuario.Usuarios = new List<object>();
-            resultUsuario.vendedor = new ML.Vendedor();
+        //[HttpPost]
+        //public ActionResult GetAll(ML.Usuario usuario)
+        //{
+        //    usuario.Usuarios = new List<object>();
 
-            using (var client = new HttpClient())
-            {
-                string urlApi = configuration["urlWebApi"];
-                client.BaseAddress = new Uri(urlApi);
+        //    using (var client = new HttpClient())
+        //    {
+        //        string urlApi = configuration["urlWebApi"];
+        //        client.BaseAddress = new Uri(urlApi);
 
-                var postTask = client.PostAsJsonAsync<ML.Usuario>("Usuario/GetAll/", resultUsuario);
-                postTask.Wait();
+        //        var responseTask = client.GetAsync("Usuario/GetAll/" + usuario);
+        //        responseTask.Wait();
 
-                var result = postTask.Result;
+        //        var result = responseTask.Result;
+        //        if (result.IsSuccessStatusCode)
+        //        {
+        //            var readTask = result.Content.ReadAsAsync<ML.Result>();
+        //            readTask.Wait();
 
-                if (result.IsSuccessStatusCode)
-                {
-                    var readTask = result.Content.ReadAsAsync<ML.Result>();
-                    readTask.Wait();
-
-                    foreach (var resultItem in readTask.Result.Objects)
-                    {
-                        ML.Usuario ResultItemList = Newtonsoft.Json.JsonConvert.DeserializeObject<ML.Usuario>(resultItem.ToString());
-                        resultUsuario.Usuarios.Add(ResultItemList);
-                    }
-                }
-            }
-            return View(resultUsuario);
-        }
+        //            foreach (var resultItem in readTask.Result.Objects)
+        //            {
+        //                ML.Usuario ResultItemList = Newtonsoft.Json.JsonConvert.DeserializeObject<ML.Usuario>(resultItem.ToString());
+        //                usuario.Usuarios.Add(ResultItemList);
+        //            }
+        //        }
+        //    }
+        //    return View(usuario);
+        //}
 
         [HttpGet]
         public ActionResult Form(int? idUsuario)
@@ -86,11 +92,13 @@ namespace PL.Controllers
             ML.Result resultRol = BL.Rol.GetAll();
 
             ML.Usuario usuario = new ML.Usuario();
+            usuario.Vendedor = new ML.Vendedor();
+            
             usuario.Rol = new ML.Rol();
 
             if (resultRol.Correct)
             {
-                usuario.Rol.Roles = resultRol.Objects;;
+                usuario.Rol.Roles = resultRol.Objects;
             }
             if (idUsuario == null)
             {
@@ -128,13 +136,11 @@ namespace PL.Controllers
         [HttpPost]
         public ActionResult Form(ML.Usuario usuario)
         {
-            usuario.vendedor = new ML.Vendedor();
-
             IFormFile file = Request.Form.Files["inpImagen"];
 
             if (file != null)
             {
-                usuario.vendedor.Foto = Convert.ToBase64String(ConvertToBytes(file));
+                usuario.Vendedor.Foto = Convert.ToBase64String(ConvertToBytes(file));
             }
 
             if (usuario.IdUsuario == 0)
@@ -146,6 +152,16 @@ namespace PL.Controllers
                     client.BaseAddress = new Uri(urlApi);
 
                     var postTask = client.PostAsJsonAsync<ML.Usuario>("Usuario/Add/", usuario);
+
+                    if (HttpContext.Session.GetString("txtJson").ToString() == string.Empty)
+                    {
+                        HttpContext.Session.SetString("txtJson", JsonConvert.SerializeObject(usuario));
+                    }
+                    else
+                    {
+                        HttpContext.Session.SetString("txtJson", HttpContext.Session.GetString("txtJson").ToString() + "," + JsonConvert.SerializeObject(usuario));
+                    }
+                    
                     postTask.Wait();
 
                     var result = postTask.Result;
@@ -263,6 +279,13 @@ namespace PL.Controllers
                 ViewBag.Message = "Usuario Invalido";
                 return PartialView("ModalLogin");
             }
+        }
+
+        [HttpGet]
+        public ActionResult GenerarJson()
+        {
+            ML.Result result = BL.Usuario.GenerarJson(HttpContext.Session.GetString("txtJson").ToString());
+            return View();
         }
     }
 }

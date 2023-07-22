@@ -2,32 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ML;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using System.Text.Json.Serialization;
 
 namespace SL.Controllers
 {
     public class UsuarioController : Controller
     {
-        [Route("api/Usuario/GetAll")]
+        [Route("api/Usuario/GetAll/{usuario}")]
         [HttpGet]
-        public IActionResult GetAll()
+        public IActionResult GetAll(ML.Usuario usuario)
         {
-            ML.Usuario usuario = new ML.Usuario();
-
-            ML.Result result = BL.Usuario.GetAll(usuario);
-
-            if (result.Correct)
-            {
-                return Ok(result);
-            }
-            else { return NotFound(result); }
-        }
-
-        [Route("api/Usuario/GetAll/")]
-        [HttpPost]
-        public IActionResult GetAll([FromBody] ML.Usuario usuario)
-        {
-            usuario.vendedor = new ML.Vendedor();
+            usuario.Vendedor = new ML.Vendedor();
 
             ML.Result result = BL.Usuario.GetAll(usuario);
 

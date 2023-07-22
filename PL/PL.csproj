@@ -29,10 +29,12 @@
 
   <ItemGroup>
     <None Remove="Views\Usuario\" />
+    <None Remove="TxtJson\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Usuario\" />
     <Folder Include="wwwroot\Images\" />
+    <Folder Include="TxtJson\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="wwwroot\Images\" />
