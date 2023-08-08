@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using ML;
-using Newtonsoft.Json;
-using System.Text;
+﻿using Microsoft.AspNetCore.Mvc;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
+using System.Security.Cryptography;
 
 namespace PL.Controllers
 {
@@ -28,16 +19,17 @@ namespace PL.Controllers
         public ActionResult GetAll()
         {
             ML.Usuario resultUsuario = new ML.Usuario();
-            resultUsuario.Vendedor = new Vendedor();
+            resultUsuario.Vendedor = new ML.Vendedor();
 
             resultUsuario.Usuarios = new List<object>();
 
             using (var client = new HttpClient())
             {
                 string urlApi = configuration["urlWebApi"];
-                client.BaseAddress = new Uri(urlApi);
 
-                var responseTask = client.GetAsync("Usuario/GetAll/" + resultUsuario);
+                string requestUri = $"Usuario/GetAll";
+
+                var responseTask = client.GetAsync(new Uri(new Uri(urlApi), requestUri));
                 responseTask.Wait();
 
                 var result = responseTask.Result;
@@ -57,34 +49,56 @@ namespace PL.Controllers
             return View(resultUsuario);
         }
 
-        //[HttpPost]
-        //public ActionResult GetAll(ML.Usuario usuario)
-        //{
-        //    usuario.Usuarios = new List<object>();
+        [HttpPost]
+        public ActionResult GetAllWebAPI(ML.Usuario usuario)
+        {
+            usuario.Usuarios = new List<object>();
 
-        //    using (var client = new HttpClient())
-        //    {
-        //        string urlApi = configuration["urlWebApi"];
-        //        client.BaseAddress = new Uri(urlApi);
+            using (var client = new HttpClient())
+            {
+                string urlApi = configuration["urlWebApi"];
 
-        //        var responseTask = client.GetAsync("Usuario/GetAll/" + usuario);
-        //        responseTask.Wait();
+                string nombre = usuario?.Vendedor?.Nombre;
+                string apellidoPaterno = usuario?.Vendedor?.ApellidoPaterno;
+                string apellidoMaterno = usuario?.Vendedor?.ApellidoMaterno;
 
-        //        var result = responseTask.Result;
-        //        if (result.IsSuccessStatusCode)
-        //        {
-        //            var readTask = result.Content.ReadAsAsync<ML.Result>();
-        //            readTask.Wait();
+                string requestUri = $"Usuario/GetAny?nombre={Uri.EscapeDataString(nombre ?? string.Empty)}&apellidoPaterno={Uri.EscapeDataString(apellidoPaterno ?? string.Empty)}&apellidoMaterno={Uri.EscapeDataString(apellidoMaterno ?? string.Empty)}";
 
-        //            foreach (var resultItem in readTask.Result.Objects)
-        //            {
-        //                ML.Usuario ResultItemList = Newtonsoft.Json.JsonConvert.DeserializeObject<ML.Usuario>(resultItem.ToString());
-        //                usuario.Usuarios.Add(ResultItemList);
-        //            }
-        //        }
-        //    }
-        //    return View(usuario);
-        //}
+                var responseTask = client.GetAsync(new Uri(new Uri(urlApi), requestUri));
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadAsAsync<ML.Result>();
+                    readTask.Wait();
+
+                    foreach (var resultItem in readTask.Result.Objects)
+                    {
+                        ML.Usuario ResultItemList = Newtonsoft.Json.JsonConvert.DeserializeObject<ML.Usuario>(resultItem.ToString());
+                        usuario.Usuarios.Add(ResultItemList);
+                    }
+                }
+            }
+            return View(usuario);
+        }
+
+        [HttpPost]
+        public ActionResult GetAll(ML.Usuario usuario)
+        {
+            ML.Result result = BL.Usuario.GetAll(usuario);
+
+            if (result.Correct)
+            {
+                usuario.Usuarios = result.Objects;
+            }
+            else
+            {
+                ViewBag.Message = "Ocurrio un error al hacer la consulta Users";
+            }
+
+            return View(usuario);
+        }
 
         [HttpGet]
         public ActionResult Form(int? idUsuario)
@@ -134,7 +148,7 @@ namespace PL.Controllers
         }
 
         [HttpPost]
-        public ActionResult Form(ML.Usuario usuario)
+        public ActionResult Form(ML.Usuario usuario, string password)
         {
             IFormFile file = Request.Form.Files["inpImagen"];
 
@@ -142,6 +156,12 @@ namespace PL.Controllers
             {
                 usuario.Vendedor.Foto = Convert.ToBase64String(ConvertToBytes(file));
             }
+
+            var bcrypt = new Rfc2898DeriveBytes(password, new byte[0], 10000, HashAlgorithmName.SHA256);
+            // Obtener el hash resultante para la contraseña ingresada 
+            var passwordHash = bcrypt.GetBytes(20);
+
+            usuario.Password = passwordHash;
 
             if (usuario.IdUsuario == 0)
             {
@@ -152,15 +172,6 @@ namespace PL.Controllers
                     client.BaseAddress = new Uri(urlApi);
 
                     var postTask = client.PostAsJsonAsync<ML.Usuario>("Usuario/Add/", usuario);
-
-                    //if (HttpContext.Session.GetString("txtJson").ToString() == string.Empty)
-                    //{
-                    //    HttpContext.Session.SetString("txtJson", JsonConvert.SerializeObject(usuario));
-                    //}
-                    //else
-                    //{
-                    //    HttpContext.Session.SetString("txtJson", HttpContext.Session.GetString("txtJson").ToString() + "," + JsonConvert.SerializeObject(usuario));
-                    //}
                     
                     postTask.Wait();
 
@@ -232,10 +243,10 @@ namespace PL.Controllers
         }
 
         [HttpPost]
-        public JsonResult CambiarStatus(int idAlumno, bool status)
+        public JsonResult CambiarStatus(int idUsuario, bool status)
         {
 
-            ML.Result result = BL.Usuario.CambiarEstatus(idAlumno, status);
+            ML.Result result = BL.Usuario.CambiarEstatus(idUsuario, status);
 
             return Json(result);
         }
@@ -256,30 +267,30 @@ namespace PL.Controllers
             return View();
         }
 
-        [HttpPost]
-        public IActionResult Login(string username, string password)
-        {
-            ML.Result result = BL.Usuario.GetByUsername(username);
+        //[HttpPost]
+        //public IActionResult Login(string username, string password)
+        //{
+        //    ML.Result result = BL.Usuario.GetByUsername(username);
 
-            if (result.Correct)
-            {
-                ML.Usuario usuario = (ML.Usuario)result.Object;
-                if (password == usuario.Password)
-                {
-                    return RedirectToAction("Index", "Home");
-                }
-                else
-                {
-                    ViewBag.Message = "Contraseña Invalida";
-                    return PartialView("ModalLogin");
-                }
-            }
-            else
-            {
-                ViewBag.Message = "Usuario Invalido";
-                return PartialView("ModalLogin");
-            }
-        }
+        //    if (result.Correct)
+        //    {
+        //        ML.Usuario usuario = (ML.Usuario)result.Object;
+        //        if (password == usuario.Password)
+        //        {
+        //            return RedirectToAction("Index", "Home");
+        //        }
+        //        else
+        //        {
+        //            ViewBag.Message = "Contraseña Invalida";
+        //            return PartialView("ModalLogin");
+        //        }
+        //    }
+        //    else
+        //    {
+        //        ViewBag.Message = "Usuario Invalido";
+        //        return PartialView("ModalLogin");
+        //    }
+        //}
     }
 }
 

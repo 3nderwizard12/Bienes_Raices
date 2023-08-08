@@ -80,7 +80,6 @@
                         <td class="text-center" style="font-weight:bold;">Celular</td>
                         <td class="visually-hidden">IdVendedor</td>
                         <td class="text-center" style="font-weight:bold;">Username</td>
-                        <td class="text-center" style="font-weight:bold;">Password</td>
                         <td class="text-center" style="font-weight:bold;">Estatus</td>
                         <td class="visually-hidden">IdRol</td>
                         <td class="text-center" style="font-weight:bold;">Rol</td>
@@ -110,7 +109,6 @@
                             <td class="text-center">@usuario.Vendedor.Celular</td>
                             <td class="visually-hidden">@usuario.IdUsuario</td>
                             <td class="text-center">@usuario.Username</td>
-                            <td class="text-center">@usuario.Password</td>
                             @if (usuario.Estatus)
                             {
                                 <td style="text-align: center; vertical-align: middle;">
@@ -136,26 +134,25 @@
             </table>
         </div>
     </section>
+    <a class="btn btn-danger" asp-area="" asp-controller="Home" asp-action="Index">Regresar</a>
 </div>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-@section Scripts {
-    <script type="text/javascript">
-        function ChangeStatus(idAlumno, e) {
+<script type="text/javascript">
+        function ChangeStatus(idUsuario, e) {
             var status = e.checked
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("CambiarStatus")',
                 dataType: 'json',
-                data: { idAlumno, status },
+                data: { idUsuario, status },
                 success: {},
                 error: function (ex) {
                     alert('Failed.' + ex);
                 }
             });
         }
-    </script>
-}
+</script>

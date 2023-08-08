@@ -1,11 +1,8 @@
-﻿using System;
-using System.Net.Http;
-using DL;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace BL
 {
-	public class Usuario
+    public class Usuario
 	{
         public static ML.Result Add(ML.Usuario usuario)
         {
@@ -121,7 +118,7 @@ namespace BL
             {
                 using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
                 {
-                    var query = cnn.Usuarios.FromSqlRaw($"UsuarioGetAll '{usuario.Vendedor.Nombre}', '{usuario.Vendedor.ApellidoPaterno}', '{usuario.Vendedor.ApellidoPaterno}'").ToList();
+                    var query = cnn.Usuarios.FromSqlRaw($"UsuarioGetAll '{usuario.Vendedor.Nombre}', '{usuario.Vendedor.ApellidoPaterno}', '{usuario.Vendedor.ApellidoMaterno}'").ToList();
 
                     result.Objects = new List<object>();
 
@@ -167,7 +164,7 @@ namespace BL
             return result;
         }
 
-        public static ML.Result GetById(int IdUsuario)
+        public static ML.Result GetById(int idUsuario)
         {
             ML.Result result = new ML.Result();
 
@@ -175,7 +172,7 @@ namespace BL
             {
                 using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
                 {
-                    var query = cnn.Usuarios.FromSqlRaw($"UsuarioById {IdUsuario}").ToList().FirstOrDefault();
+                    var query = cnn.Usuarios.FromSqlRaw($"UsuarioById {idUsuario}").ToList().FirstOrDefault();
 
                     if (query != null)
                     {

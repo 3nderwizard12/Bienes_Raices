@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ML;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using System.Text.Json.Serialization;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace SL.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class UsuarioController : Controller
     {
-        [Route("api/Usuario/GetAll/{usuario}")]
-        [HttpGet]
-        public IActionResult GetAll(ML.Usuario usuario)
+        [HttpGet("GetAll")]
+        public IActionResult GetAll()
         {
+            ML.Usuario usuario = new ML.Usuario();
             usuario.Vendedor = new ML.Vendedor();
 
             ML.Result result = BL.Usuario.GetAll(usuario);
@@ -26,8 +21,26 @@ namespace SL.Controllers
             else { return NotFound(result); }
         }
 
-        [Route("api/Usuario/Add")]
-        [HttpPost]
+        [HttpGet("GetAny")]
+        public IActionResult GetAll([FromQuery] string nombre, [FromQuery] string apellidoPaterno, [FromQuery] string apellidoMaterno)
+        {
+            ML.Usuario usuario = new ML.Usuario();
+            usuario.Vendedor = new ML.Vendedor();
+
+            usuario.Vendedor.Nombre = nombre;
+            usuario.Vendedor.ApellidoPaterno = apellidoPaterno;
+            usuario.Vendedor.ApellidoMaterno = apellidoMaterno;
+
+            ML.Result result = BL.Usuario.GetAll(usuario);
+
+            if (result.Correct)
+            {
+                return Ok(result);
+            }
+            else { return NotFound(result); }
+        }
+
+        [HttpPost("Add")]
         public IActionResult Add([FromBody] ML.Usuario usuario)
         {
             ML.Result result = BL.Usuario.Add(usuario);
@@ -39,8 +52,7 @@ namespace SL.Controllers
             else { return NotFound(result); }
         }
 
-        [Route("api/Usuario/Delete/{id}")]
-        [HttpGet]
+        [HttpGet("Delete/{id}")]
         public IActionResult Delete(int id)
         {
             ML.Usuario usuario = new ML.Usuario();
@@ -56,8 +68,7 @@ namespace SL.Controllers
             else { return NotFound(result); }
         }
 
-        [Route("api/Usuario/Update/{id}")]
-        [HttpPut]
+        [HttpPut("Update/{id}")]
         public IActionResult Update(int id, [FromBody] ML.Usuario usuario)
         {
             ML.Result result = BL.Usuario.Update(usuario);
@@ -69,8 +80,7 @@ namespace SL.Controllers
             else { return NotFound(result); }
         }
 
-        [Route("api/Usuario/GetById/{id}")]
-        [HttpGet]
+        [HttpGet("GetById/{id}")]
         public IActionResult GetById(int id)
         {
             ML.Result result = BL.Usuario.GetById(id);
@@ -82,23 +92,22 @@ namespace SL.Controllers
             else { return NotFound(); }
         }
 
-        [Route("api/Usuario/GetByUserName/{userName},{password}")]
-        [HttpGet]
-        public IActionResult GetByUserName(string username, string password)
-        {
-            ML.Result result = BL.Usuario.GetByUsername(username);
+        //[HttpGet("GetByUserName/{userName},{password}")]
+        //public IActionResult GetByUserName(string username, string password)
+        //{
+        //    ML.Result result = BL.Usuario.GetByUsername(username);
 
-            if (result.Correct)
-            {
-                ML.Usuario usuario = (ML.Usuario)result.Object;
-                if (password == usuario.Password)
-                {
-                    return Ok(result.Object);
-                }
-                else { return NotFound(); }
-            }
-            else { return NotFound(); }
-        }
+        //    if (result.Correct)
+        //    {
+        //        ML.Usuario usuario = (ML.Usuario)result.Object;
+        //        if (password == usuario.Password)
+        //        {
+        //            return Ok(result.Object);
+        //        }
+        //        else { return NotFound(); }
+        //    }
+        //    else { return NotFound(); }
+        //}
     }
 }
 

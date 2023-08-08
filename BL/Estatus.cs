@@ -2,7 +2,7 @@
 
 namespace BL
 {
-	public class Rol
+	public class Estatus
 	{
         public static ML.Result GetAll()
         {
@@ -13,7 +13,7 @@ namespace BL
             {
                 using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
                 {
-                    var query = cnn.Rols.FromSqlRaw($"RolGetAll").ToList();
+                    var query = cnn.Estatuses.FromSqlRaw($"EstatusGetAll").ToList();
 
                     result.Objects = new List<object>();
 
@@ -21,12 +21,12 @@ namespace BL
                     {
                         foreach (var row in query)
                         {
-                            ML.Rol rol = new ML.Rol();
+                            ML.Estatus estatus = new ML.Estatus();
 
-                            rol.IdRol = row.IdRol;
-                            rol.Nombre = row.Nombre;
+                            estatus.IdEstatus = row.IdEstatus;
+                            estatus.Nombre = row.Nombre;
 
-                            result.Objects.Add(rol);
+                            result.Objects.Add(estatus);
                         }
                         result.Correct = true;
                     }

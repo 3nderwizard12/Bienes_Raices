@@ -21,6 +21,52 @@ public partial class Cliente
 
     public int IdVendedor { get; set; }
 
+    //Calle
+
+    public string Calle { get; set; } = null!;
+
+    public string? NumeroInterior { get; set; }
+
+    public string Numeroexterior { get; set; } = null!;
+
+    //Pago
+
+    public double Enganche { get; set; }
+
+    public DateTime DiasPago { get; set; }
+
+    public byte IdMetodoPago { get; set; }
+
+    public double Intereses { get; set; }
+
+    public double MensualidadMinima { get; set; }
+
+    //Costo
+
+    public string? Letras { get; set; }
+
+    public double CostoTotal { get; set; }
+
+    public double TotalxMetro { get; set; }
+
+    public double CostoxMetro { get; set; }
+
+    public int IdPago { get; set; }
+
+    //Contrato
+
+    public string NumeroContrato { get; set; } = null!;
+
+    public DateTime? FechaInicioContrato { get; set; }
+
+    public DateTime? FechaFinContrato { get; set; }
+
+    public int IdCosto { get; set; }
+
+    public byte IdEstatusContrato { get; set; }
+
+    //Ubicacion
+
     public virtual ICollection<Contrato> Contratos { get; set; } = new List<Contrato>();
 
     public virtual ICollection<Direccion> Direccions { get; set; } = new List<Direccion>();

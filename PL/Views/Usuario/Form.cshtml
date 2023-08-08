@@ -129,7 +129,9 @@
                 <div class="col">
                     @Html.LabelFor(model => model.Password)
 
-                    @Html.TextBoxFor(model => model.Password, new { @class = "form-control", @id = "txtTelefono", @onkeypress = "numeros(event, 'txtTelefono', 'lblTelefono')" })
+                    @*@Html.TextBoxFor(model => model.Password, new { @class = "form-control", @id = "txtTelefono", @onkeypress = "numeros(event, 'txtTelefono', 'lblTelefono')" })*@
+
+                    <input type="password" name="password" class="form-control" id="logpass" autocomplete="off">
 
                     @Html.ValidationMessageFor(model => model.Password, null, new { @class = "text-danger" })
                 </div>
