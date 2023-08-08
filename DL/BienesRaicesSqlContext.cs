@@ -35,6 +35,8 @@ public partial class BienesRaicesSqlContext : DbContext
 
     public virtual DbSet<Rol> Rols { get; set; }
 
+    public virtual DbSet<Ubicacion> Ubicacions { get; set; }
+
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
     public virtual DbSet<Vendedor> Vendedors { get; set; }
@@ -227,17 +229,45 @@ public partial class BienesRaicesSqlContext : DbContext
                 .IsUnicode(false);
         });
 
+        modelBuilder.Entity<Ubicacion>(entity =>
+        {
+            entity.HasKey(e => e.IdUbicacion);
+
+            entity.ToTable("Ubicacion");
+
+            entity.Property(e => e.Desarrollo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Lote)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.Manzana)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.NumeroContrato)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.IdEstatusNavigation).WithMany(p => p.Ubicacions)
+                .HasForeignKey(d => d.IdEstatus)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Ubicacion_Cliente_Estatus");
+
+            entity.HasOne(d => d.NumeroContratoNavigation).WithMany(p => p.Ubicacions)
+                .HasForeignKey(d => d.NumeroContrato)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Ubicacion_NumeroContrato");
+        });
+
         modelBuilder.Entity<Usuario>(entity =>
         {
             entity.HasKey(e => e.IdUsuario);
 
             entity.ToTable("Usuario");
 
-            entity.HasIndex(e => e.Username, "UQ__Usuario__536C85E48D3DD912").IsUnique();
+            entity.HasIndex(e => e.Username, "UQ__Usuario__536C85E44AB2445C").IsUnique();
 
-            entity.Property(e => e.Password)
-                .HasMaxLength(50)
-                .IsUnicode(false);
+            entity.Property(e => e.Password).HasMaxLength(20);
             entity.Property(e => e.Username)
                 .HasMaxLength(50)
                 .IsUnicode(false);
