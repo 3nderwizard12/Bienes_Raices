@@ -21,6 +21,10 @@ namespace ML
 
         public ML.Vendedor? Vendedor { get; set; }
 
+        public ML.Direccion? Direccion { get; set; }
+
+        public ML.Contrato? Contrato { get; set; }
+
         public List<object>? Clientes { get; set; }
     }
 }

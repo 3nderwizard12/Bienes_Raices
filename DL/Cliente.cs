@@ -19,9 +19,15 @@ public partial class Cliente
 
     public string? Observaciones { get; set; }
 
+    //Vendedor
+
     public int IdVendedor { get; set; }
 
-    //Calle
+    public string NombreVendedor { get; set; } = null!;
+
+    //Direccion
+
+    public int IdDireccion { get; set; }
 
     public string Calle { get; set; } = null!;
 
@@ -35,11 +41,15 @@ public partial class Cliente
 
     public DateTime DiasPago { get; set; }
 
-    public byte IdMetodoPago { get; set; }
-
     public double Intereses { get; set; }
 
     public double MensualidadMinima { get; set; }
+
+    //Metodo pago
+
+    public byte IdMetodoPago { get; set; }
+
+    public string NombreMetodoPago { get; set; } = null!;
 
     //Costo
 
@@ -63,9 +73,39 @@ public partial class Cliente
 
     public int IdCosto { get; set; }
 
+    //Estatus Contrato
+
     public byte IdEstatusContrato { get; set; }
 
+    public string NombreEstatusContrato { get; set; } = null!;
+
     //Ubicacion
+
+    public int IdUbicacion { get; set; }
+
+    public string Desarrollo { get; set; } = null!;
+
+    public string Manzana { get; set; } = null!;
+
+    public string Lote { get; set; } = null!;
+
+    //Estatus
+
+    public byte IdEstatus { get; set; }
+
+    public string NombreEstatus { get; set; } = null!;
+
+    //Colaborador
+
+    public int IdColaborador { get; set; }
+
+    public string NombreColaborador { get; set; } = null!;
+
+    public string ApellidoPaternoColaborador { get; set; } = null!;
+
+    public string ApellidoMaternoColaborador { get; set; } = null!;
+
+    public double? Segmento { get; set; }
 
     public virtual ICollection<Contrato> Contratos { get; set; } = new List<Contrato>();
 

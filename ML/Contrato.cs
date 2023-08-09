@@ -13,7 +13,11 @@ namespace ML
 
         public ML.Costo? Costo { get; set; }
 
+        public ML.Pago? Pago { get; set; }
+
         public ML.EstatusContrato? EstatusContrato { get; set; }
+
+        public ML.Ubicacion? Ubicacion { get; set; }
 
         public List<object>? NumeroContratos { get; set; }
     }

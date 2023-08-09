@@ -12,7 +12,9 @@ namespace BL
             {
                 using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
                 {
-                    int query = cnn.Database.ExecuteSqlRaw($"UsuarioAdd '{usuario.Vendedor.Nombre}', '{usuario.Vendedor.ApellidoPaterno}', '{usuario.Vendedor.ApellidoMaterno}', '{usuario.Vendedor.Curp}', '{usuario.Vendedor.Rfc}', '{usuario.Vendedor.Foto}', '{usuario.Vendedor.Email}', '{usuario.Vendedor.Celular}', '{usuario.Username}', '{usuario.Password}', {usuario.Rol.IdRol}");
+                    int query = cnn.Database.ExecuteSqlRaw($"UsuarioAdd" +
+                        $" '{usuario.Vendedor.Nombre}', '{usuario.Vendedor.ApellidoPaterno}', '{usuario.Vendedor.ApellidoMaterno}', '{usuario.Vendedor.Curp}', '{usuario.Vendedor.Rfc}', '{usuario.Vendedor.Foto}', '{usuario.Vendedor.Email}', '{usuario.Vendedor.Celular}'," +
+                        $" '{usuario.Username}', '{usuario.Password}', {usuario.Rol.IdRol}");
 
                     if (query > 0)
                     {
@@ -66,7 +68,9 @@ namespace BL
             {
                 using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
                 {
-                    int query = cnn.Database.ExecuteSqlRaw($"UsuarioUpdate {usuario.Vendedor.IdVendedor}, '{usuario.Vendedor.Nombre}', '{usuario.Vendedor.ApellidoPaterno}', '{usuario.Vendedor.ApellidoMaterno}', '{usuario.Vendedor.Curp}', '{usuario.Vendedor.Rfc}', '{usuario.Vendedor.Foto}', '{usuario.Vendedor.Email}', '{usuario.Vendedor.Celular}', '{usuario.Username}', '{usuario.Password}', {usuario.Rol.IdRol}");
+                    int query = cnn.Database.ExecuteSqlRaw($"UsuarioUpdate" +
+                        $" {usuario.Vendedor.IdVendedor}, '{usuario.Vendedor.Nombre}', '{usuario.Vendedor.ApellidoPaterno}', '{usuario.Vendedor.ApellidoMaterno}', '{usuario.Vendedor.Curp}', '{usuario.Vendedor.Rfc}', '{usuario.Vendedor.Foto}', '{usuario.Vendedor.Email}', '{usuario.Vendedor.Celular}'," +
+                        $" '{usuario.Username}', '{usuario.Password}', {usuario.Rol.IdRol}");
 
                     if (query > 0)
                     {

@@ -9,11 +9,13 @@ namespace ML
 
         public DateTime DiasPago { get; set; }
 
-        public byte IdMetodoPago { get; set; }
+        public ML.MetodoPago? MetodoPago { get; set; }
 
         public double Intereses { get; set; }
 
         public double MensualidadMinima { get; set; }
+
+        public ML.Costo? Costo { get; set; }
 
         public List<object>? Pagos { get; set; }
     }
