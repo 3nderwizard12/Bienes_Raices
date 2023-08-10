@@ -17,6 +17,8 @@ public partial class Ubicacion
 
     public string NumeroContrato { get; set; } = null!;
 
+    public virtual ICollection<Colaborador> Colaboradors { get; set; } = new List<Colaborador>();
+
     public virtual Estatus IdEstatusNavigation { get; set; } = null!;
 
     public virtual Contrato NumeroContratoNavigation { get; set; } = null!;

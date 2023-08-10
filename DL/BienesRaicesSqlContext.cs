@@ -92,8 +92,8 @@ public partial class BienesRaicesSqlContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.Segmento).HasColumnName("segmento");
 
-            entity.HasOne(d => d.IdVendedorNavigation).WithMany(p => p.Colaboradors)
-                .HasForeignKey(d => d.IdVendedor)
+            entity.HasOne(d => d.IdUbicacionNavigation).WithMany(p => p.Colaboradors)
+                .HasForeignKey(d => d.IdUbicacion)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Colaborador");
         });

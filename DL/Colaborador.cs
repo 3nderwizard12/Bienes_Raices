@@ -15,7 +15,7 @@ public partial class Colaborador
 
     public double? Segmento { get; set; }
 
-    public int IdVendedor { get; set; }
+    public int IdUbicacion { get; set; }
 
-    public virtual Vendedor IdVendedorNavigation { get; set; } = null!;
+    public virtual Ubicacion IdUbicacionNavigation { get; set; } = null!;
 }
