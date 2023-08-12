@@ -105,10 +105,7 @@ namespace PL.Controllers
         {
             ML.Result resultRol = BL.Rol.GetAll();
 
-            ML.Usuario usuario = new ML.Usuario();
-            usuario.Vendedor = new ML.Vendedor();
-            
-            usuario.Rol = new ML.Rol();
+            ML.Usuario usuario = new ML.Usuario { Vendedor = new ML.Vendedor(), Rol = new ML.Rol() };
 
             if (resultRol.Correct)
             {
@@ -148,6 +145,51 @@ namespace PL.Controllers
         }
 
         [HttpPost]
+        public async Task<ActionResult> FrmAsync(ML.Usuario usuario, string password)
+        {
+            IFormFile file = Request.Form.Files["inpImagen"];
+
+            if (file != null)
+            {
+                usuario.Vendedor.Foto = Convert.ToBase64String(await ConvertToBytesAsync(file));
+            }
+
+            if (!string.IsNullOrEmpty(password))
+            {
+                var bcrypt = new Rfc2898DeriveBytes(password, new byte[0], 10000, HashAlgorithmName.SHA256);
+                usuario.Password = bcrypt.GetBytes(20);
+            }
+
+            using (var client = new HttpClient())
+            {
+                string urlApi = configuration["urlWebApi"];
+                client.BaseAddress = new Uri(urlApi);
+
+                HttpResponseMessage result;
+
+                if (usuario.IdUsuario == 0)
+                {
+                    result = await client.PostAsJsonAsync("Usuario/Add", usuario);
+                }
+                else
+                {
+                    result = await client.PutAsJsonAsync($"Usuario/Update/{usuario.IdUsuario}", usuario);
+                }
+
+                if (result.IsSuccessStatusCode)
+                {
+                    ViewBag.Message = "Registro correctamente " + (usuario.IdUsuario == 0 ? "insertado" : "actualizado");
+                }
+                else
+                {
+                    ViewBag.Message = "Ocurrió un error al realizar la operación";
+                }
+
+                return PartialView("Modal");
+            }
+        }
+
+        [HttpPost]
         public ActionResult Form(ML.Usuario usuario, string password)
         {
             IFormFile file = Request.Form.Files["inpImagen"];
@@ -157,63 +199,35 @@ namespace PL.Controllers
                 usuario.Vendedor.Foto = Convert.ToBase64String(ConvertToBytes(file));
             }
 
-            var bcrypt = new Rfc2898DeriveBytes(password, new byte[0], 10000, HashAlgorithmName.SHA256);
-            // Obtener el hash resultante para la contraseña ingresada 
-            var passwordHash = bcrypt.GetBytes(20);
+            if (!string.IsNullOrEmpty(password))
+            {
+                var bcrypt = new Rfc2898DeriveBytes(password, new byte[0], 10000, HashAlgorithmName.SHA256);
+                usuario.Password = bcrypt.GetBytes(20);
+            }
 
-            usuario.Password = passwordHash;
+            ML.Result result;
 
             if (usuario.IdUsuario == 0)
             {
-                //add
-                using (var client = new HttpClient())
-                {
-                    string urlApi = configuration["urlWebApi"];
-                    client.BaseAddress = new Uri(urlApi);
-
-                    var postTask = client.PostAsJsonAsync<ML.Usuario>("Usuario/Add/", usuario);
-                    
-                    postTask.Wait();
-
-                    var result = postTask.Result;
-
-                    if (result.IsSuccessStatusCode)
-                    {
-                        ViewBag.Message = "Registro correctamente insertado";
-                        return PartialView("Modal");
-                    }
-                    else
-                    {
-                        ViewBag.Message = "Ocurrio un error al Insertar el registro";
-                        return PartialView("Modal");
-                    }
-                }
+                // Add
+                result = BL.Usuario.Add(usuario);
             }
             else
             {
-                //update
-                using (var client = new HttpClient())
-                {
-                    string urlApi = configuration["urlWebApi"];
-                    client.BaseAddress = new Uri(urlApi);
-
-                    var postTask = client.PutAsJsonAsync<ML.Usuario>("Usuario/Update/" + usuario.IdUsuario, usuario);
-                    postTask.Wait();
-
-                    var result = postTask.Result;
-
-                    if (result.IsSuccessStatusCode)
-                    {
-                        ViewBag.Message = "Registro correctamente actualizado";
-                        return PartialView("Modal");
-                    }
-                    else
-                    {
-                        ViewBag.Message = "Ocurrio un error al actualizar el actualizado";
-                        return PartialView("Modal");
-                    }
-                }
+                // Update
+                result = BL.Usuario.Update(usuario);
             }
+
+            if (result.Correct)
+            {
+                ViewBag.Message = usuario.IdUsuario == 0 ? "Registro correctamente insertado" : "Registro correctamente actualizado";
+            }
+            else
+            {
+                ViewBag.Message = usuario.IdUsuario == 0 ? "Ocurrio un error al insertar el registro" : "Ocurrio un error al actualizar el registro";
+            }
+
+            return View("Modal");
         }
 
         [HttpGet]
@@ -243,17 +257,24 @@ namespace PL.Controllers
         }
 
         [HttpPost]
-        public JsonResult CambiarStatus(int idUsuario, bool status)
+        private JsonResult CambiarStatus(int idUsuario, bool status)
         {
-
             ML.Result result = BL.Usuario.CambiarEstatus(idUsuario, status);
 
             return Json(result);
         }
 
-        public static byte[] ConvertToBytes(IFormFile imagen)
+        private async Task<byte[]> ConvertToBytesAsync(IFormFile file)
         {
+            using (var memoryStream = new MemoryStream())
+            {
+                await file.CopyToAsync(memoryStream);
+                return memoryStream.ToArray();
+            }
+        }
 
+        private static byte[] ConvertToBytes(IFormFile imagen)
+        {
             using var fileStream = imagen.OpenReadStream();
 
             byte[] bytes = new byte[fileStream.Length];
@@ -293,4 +314,3 @@ namespace PL.Controllers
         //}
     }
 }
-

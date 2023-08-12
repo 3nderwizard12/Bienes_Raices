@@ -1,4 +1,4 @@
-﻿@model ML.Usuario
+﻿@model ML.Cliente
 @{
     ViewBag.Title = "Form";
     //Layout = "~/Views/Shared/_Layout.cshtml";
@@ -65,7 +65,7 @@
                 <div class="col">
                     @Html.LabelFor(model => model.Vendedor.Curp)
 
-                    @Html.TextBoxFor(model => model.Vendedor.Curp, new { @class = "form-control"})
+                    @Html.TextBoxFor(model => model.Vendedor.Curp, new { @class = "form-control" })
 
                     @Html.ValidationMessageFor(model => model.Vendedor.Curp, null, new { @class = "text-danger" })
                 </div>
@@ -73,7 +73,7 @@
                 <div class="col">
                     @Html.LabelFor(model => model.Vendedor.Rfc)
 
-                    @Html.TextBoxFor(model => model.Vendedor.Rfc, new { @class = "form-control"})
+                    @Html.TextBoxFor(model => model.Vendedor.Rfc, new { @class = "form-control" })
 
                     @Html.ValidationMessageFor(model => model.Vendedor.Rfc, null, new { @class = "text-danger" })
                 </div>
@@ -101,7 +101,7 @@
                 <div class="col">
                     @Html.LabelFor(model => model.Vendedor.Email)
 
-                    @Html.TextBoxFor(model => model.Vendedor.Email, new { @class = "form-control"})
+                    @Html.TextBoxFor(model => model.Vendedor.Email, new { @class = "form-control" })
 
                     @Html.ValidationMessageFor(model => model.Vendedor.Email, null, new { @class = "text-danger" })
                 </div>
@@ -109,7 +109,7 @@
                 <div class="col">
                     @Html.LabelFor(model => model.Vendedor.Celular)
 
-                    @Html.TextBoxFor(model => model.Vendedor.Celular, new { @class = "form-control"})
+                    @Html.TextBoxFor(model => model.Vendedor.Celular, new { @class = "form-control" })
 
                     @Html.ValidationMessageFor(model => model.Vendedor.Celular, null, new { @class = "text-danger" })
                 </div>
@@ -117,7 +117,7 @@
                 <div class="col">
                     @Html.LabelFor(model => model.Username)
 
-                    @Html.TextBoxFor(model => model.Username, new { @class = "form-control"})
+                    @Html.TextBoxFor(model => model.Username, new { @class = "form-control" })
 
                     @Html.ValidationMessageFor(model => model.Username, null, new { @class = "text-danger" })
                 </div>
@@ -159,38 +159,3 @@
         }
     </div>
 </div>
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="~/js/site.js" asp-append-version="true"></script>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-<link rel="stylesheet" href="/resources/demos/style.css">
-<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
-<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-
-<script type="text/javascript">function validateFile() {
-        var allowedExtension = ['jpeg', 'jpg', 'png'];
-        var fileExtension = document.getElementById('inpImagen').value.split('.').pop().toLowerCase();
-        var isValidFile = false;
-        for (var index in allowedExtension) {
-            if (fileExtension === allowedExtension[index]) {
-                isValidFile = true;
-                break;
-            }
-        }
-        if (!isValidFile) {
-            alert('Las extensiones permitidas son : *.' + allowedExtension.join(', *.'));
-            document.getElementById('inpImagen').value = ""
-        }
-        return isValidFile;
-    }
-
-    function visualizarImagen(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                $('#Img').attr('src', e.target.result);
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-</script>

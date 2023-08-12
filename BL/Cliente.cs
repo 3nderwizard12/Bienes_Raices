@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace BL
 {
-	public class Cliente
-	{
+    public class Cliente
+    {
         public static ML.Result Add(ML.Cliente cliente)
         {
             ML.Result result = new ML.Result();
@@ -12,13 +13,41 @@ namespace BL
             {
                 using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
                 {
-                    int query = cnn.Database.ExecuteSqlRaw($"ClienteAdd" +
-                        $" '{cliente.Nombre}', '{cliente.ApellidoPaterno}', '{cliente.ApellidoMaterno}', '{cliente.Edad}', '{cliente.Telefono}', '{cliente.Observaciones}', {cliente.Vendedor.IdVendedor}," +
-                        $" '{cliente.Direccion.Calle}', '{cliente.Direccion.NumeroInterior}', '{cliente.Direccion.Numeroexterior}'," +
-                        $" '{cliente.Contrato.Pago.Enganche}', '{cliente.Contrato.Pago.DiasPago}', {cliente.Contrato.Pago.MetodoPago.IdMetodoPago}, '{cliente.Contrato.Pago.MensualidadMinima}'," +
-                        $" '{cliente.Contrato.Pago.Costo.Letras}', '{cliente.Contrato.Pago.Costo.CostoTotal}', '{cliente.Contrato.Pago.Costo.TotalxMetro}', '{cliente.Contrato.Pago.Costo.CostoxMetro}'," +
-                        $" '{cliente.Contrato.NumeroContrato}', '{cliente.Contrato.FechaInicioContrato}', '{cliente.Contrato.FechaFinContrato}', {cliente.Contrato.EstatusContrato.IdEstatusContrato}," +
-                        $" '{cliente.Contrato.Ubicacion.Desarrollo}', ''{cliente.Contrato.Ubicacion.Manzana}', '{cliente.Contrato.Ubicacion.Lote}', {cliente.Contrato.Ubicacion.Estatus.IdEstatus},");
+                    int query = cnn.Database.ExecuteSqlRaw(
+                        "EXEC ClienteAdd " +
+                        "@Nombre, @ApellidoPaterno, @ApellidoMaterno, @Edad, @Telefono, @Observaciones, @IdVendedor, " +
+                        "@Calle, @NumeroInterior, @NumeroExterior, " +
+                        "@Enganche, @DiasPago, @IdMetodoPago, @MensualidadMinima, " +
+                        "@Letras, @CostoTotal, @TotalxMetro, @CostoxMetro, " +
+                        "@NumeroContrato, @FechaInicioContrato, @FechaFinContrato, @IdEstatusContrato, " +
+                        "@Desarrollo, @Manzana, @Lote, @IdEstatus",
+                        new SqlParameter("@Nombre", cliente.Nombre),
+                        new SqlParameter("@ApellidoPaterno", cliente.ApellidoPaterno),
+                        new SqlParameter("@ApellidoMaterno", cliente.ApellidoMaterno),
+                        new SqlParameter("@Edad", cliente.Edad),
+                        new SqlParameter("@Telefono", cliente.Telefono),
+                        new SqlParameter("@Observaciones", cliente.Observaciones),
+                        new SqlParameter("@IdVendedor", cliente.Vendedor.IdVendedor),
+                        new SqlParameter("@Calle", cliente.Direccion.Calle),
+                        new SqlParameter("@NumeroInterior", cliente.Direccion.NumeroInterior),
+                        new SqlParameter("@NumeroExterior", cliente.Direccion.Numeroexterior),
+                        new SqlParameter("@Enganche", cliente.Contrato.Pago.Enganche),
+                        new SqlParameter("@DiasPago", cliente.Contrato.Pago.DiasPago),
+                        new SqlParameter("@IdMetodoPago", cliente.Contrato.Pago.MetodoPago.IdMetodoPago),
+                        new SqlParameter("@MensualidadMinima", cliente.Contrato.Pago.MensualidadMinima),
+                        new SqlParameter("@Letras", cliente.Contrato.Pago.Costo.Letras),
+                        new SqlParameter("@CostoTotal", cliente.Contrato.Pago.Costo.CostoTotal),
+                        new SqlParameter("@TotalxMetro", cliente.Contrato.Pago.Costo.TotalxMetro),
+                        new SqlParameter("@CostoxMetro", cliente.Contrato.Pago.Costo.CostoxMetro),
+                        new SqlParameter("@NumeroContrato", cliente.Contrato.NumeroContrato),
+                        new SqlParameter("@FechaInicioContrato", cliente.Contrato.FechaInicioContrato),
+                        new SqlParameter("@FechaFinContrato", cliente.Contrato.FechaFinContrato),
+                        new SqlParameter("@IdEstatusContrato", cliente.Contrato.EstatusContrato.IdEstatusContrato),
+                        new SqlParameter("@Desarrollo", cliente.Contrato.Ubicacion.Desarrollo),
+                        new SqlParameter("@Manzana", cliente.Contrato.Ubicacion.Manzana),
+                        new SqlParameter("@Lote", cliente.Contrato.Ubicacion.Lote),
+                        new SqlParameter("@IdEstatus", cliente.Contrato.Ubicacion.Estatus.IdEstatus)
+                        );
 
                     if (query > 0)
                     {
@@ -44,7 +73,8 @@ namespace BL
             {
                 using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
                 {
-                    int query = cnn.Database.ExecuteSqlRaw($"ClienteDelete {cliente.IdCliente}");
+                    int query = cnn.Database.ExecuteSqlRaw("EXEC ClienteDelete @IdCliente",
+                        new SqlParameter("@IdCliente", cliente.IdCliente));
 
                     if (query > 0)
                     {
@@ -70,13 +100,42 @@ namespace BL
             {
                 using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
                 {
-                    int query = cnn.Database.ExecuteSqlRaw($"ClienteUpdate" +
-                        $" {cliente.IdCliente}, '{cliente.Nombre}', '{cliente.ApellidoPaterno}', '{cliente.ApellidoMaterno}', '{cliente.Edad}', '{cliente.Telefono}', '{cliente.Observaciones}', {cliente.Vendedor.IdVendedor}," +
-                        $" '{cliente.Direccion.Calle}', '{cliente.Direccion.NumeroInterior}', '{cliente.Direccion.Numeroexterior}'," +
-                        $" '{cliente.Contrato.Pago.Enganche}', '{cliente.Contrato.Pago.DiasPago}', {cliente.Contrato.Pago.MetodoPago.IdMetodoPago}, '{cliente.Contrato.Pago.MensualidadMinima}'," +
-                        $" '{cliente.Contrato.Pago.Costo.Letras}', '{cliente.Contrato.Pago.Costo.CostoTotal}', '{cliente.Contrato.Pago.Costo.TotalxMetro}', '{cliente.Contrato.Pago.Costo.CostoxMetro}'," +
-                        $" '{cliente.Contrato.NumeroContrato}', '{cliente.Contrato.FechaInicioContrato}', '{cliente.Contrato.FechaFinContrato}', {cliente.Contrato.EstatusContrato.IdEstatusContrato}," +
-                        $" '{cliente.Contrato.Ubicacion.Desarrollo}', ''{cliente.Contrato.Ubicacion.Manzana}', '{cliente.Contrato.Ubicacion.Lote}', {cliente.Contrato.Ubicacion.Estatus.IdEstatus},");
+                    int query = cnn.Database.ExecuteSqlRaw(
+                        "EXEC ClienteUpdate " +
+                        "@IdCliente, @Nombre, @ApellidoPaterno, @ApellidoMaterno, @Edad, @Telefono, @Observaciones, @IdVendedor, " +
+                        "@Calle, @NumeroInterior, @NumeroExterior, " +
+                        "@Enganche, @DiasPago, @IdMetodoPago, @MensualidadMinima, " +
+                        "@Letras, @CostoTotal, @TotalxMetro, @CostoxMetro, " +
+                        "@NumeroContrato, @FechaInicioContrato, @FechaFinContrato, @IdEstatusContrato, " +
+                        "@Desarrollo, @Manzana, @Lote, @IdEstatus",
+                        new SqlParameter("@IdCliente", cliente.IdCliente),
+                        new SqlParameter("@Nombre", cliente.Nombre),
+                        new SqlParameter("@ApellidoPaterno", cliente.ApellidoPaterno),
+                        new SqlParameter("@ApellidoMaterno", cliente.ApellidoMaterno),
+                        new SqlParameter("@Edad", cliente.Edad),
+                        new SqlParameter("@Telefono", cliente.Telefono),
+                        new SqlParameter("@Observaciones", cliente.Observaciones),
+                        new SqlParameter("@IdVendedor", cliente.Vendedor.IdVendedor),
+                        new SqlParameter("@Calle", cliente.Direccion.Calle),
+                        new SqlParameter("@NumeroInterior", cliente.Direccion.NumeroInterior),
+                        new SqlParameter("@NumeroExterior", cliente.Direccion.Numeroexterior),
+                        new SqlParameter("@Enganche", cliente.Contrato.Pago.Enganche),
+                        new SqlParameter("@DiasPago", cliente.Contrato.Pago.DiasPago),
+                        new SqlParameter("@IdMetodoPago", cliente.Contrato.Pago.MetodoPago.IdMetodoPago),
+                        new SqlParameter("@MensualidadMinima", cliente.Contrato.Pago.MensualidadMinima),
+                        new SqlParameter("@Letras", cliente.Contrato.Pago.Costo.Letras),
+                        new SqlParameter("@CostoTotal", cliente.Contrato.Pago.Costo.CostoTotal),
+                        new SqlParameter("@TotalxMetro", cliente.Contrato.Pago.Costo.TotalxMetro),
+                        new SqlParameter("@CostoxMetro", cliente.Contrato.Pago.Costo.CostoxMetro),
+                        new SqlParameter("@NumeroContrato", cliente.Contrato.NumeroContrato),
+                        new SqlParameter("@FechaInicioContrato", cliente.Contrato.FechaInicioContrato),
+                        new SqlParameter("@FechaFinContrato", cliente.Contrato.FechaFinContrato),
+                        new SqlParameter("@IdEstatusContrato", cliente.Contrato.EstatusContrato.IdEstatusContrato),
+                        new SqlParameter("@Desarrollo", cliente.Contrato.Ubicacion.Desarrollo),
+                        new SqlParameter("@Manzana", cliente.Contrato.Ubicacion.Manzana),
+                        new SqlParameter("@Lote", cliente.Contrato.Ubicacion.Lote),
+                        new SqlParameter("@IdEstatus", cliente.Contrato.Ubicacion.Estatus.IdEstatus)
+                        );
 
                     if (query > 0)
                     {
@@ -102,7 +161,8 @@ namespace BL
             {
                 using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
                 {
-                    var query = cnn.Clientes.FromSqlRaw($"ClienteGetAll '{cliente.Nombre}', '{cliente.ApellidoPaterno}', '{cliente.ApellidoMaterno}'").ToList();
+                    var query = cnn.Clientes.FromSqlRaw($"UsuarioGetAll " +
+                        $"'{cliente.Nombre}', '{cliente.ApellidoPaterno}', '{cliente.ApellidoMaterno}'").ToList();
 
                     result.Objects = new List<object>();
 
@@ -110,67 +170,79 @@ namespace BL
                     {
                         foreach (var row in query)
                         {
-                            cliente = new ML.Cliente();
-                            cliente.IdCliente = row.IdCliente;
-                            cliente.Nombre = row.Nombre;
-                            cliente.ApellidoPaterno = row.ApellidoPaterno;
-                            cliente.ApellidoMaterno = row.ApellidoMaterno;
-                            cliente.Edad = row.Edad;
-                            cliente.Telefono = row.Telefono;
-                            cliente.Observaciones = row.Observaciones;
-
-                            cliente.Vendedor = new ML.Vendedor();
-                            cliente.Vendedor.IdVendedor = row.IdVendedor;
-                            cliente.Vendedor.Nombre = row.NombreVendedor;
-
-                            cliente.Direccion = new ML.Direccion();
-                            cliente.Direccion.IdDireccion = row.IdDireccion;
-                            cliente.Direccion.NumeroInterior = row.NumeroInterior;
-                            cliente.Direccion.Numeroexterior = row.Numeroexterior;
-
-                            cliente.Contrato = new ML.Contrato();
-                            cliente.Contrato.NumeroContrato = row.NumeroContrato;
-                            cliente.Contrato.FechaInicioContrato = row.FechaInicioContrato;
-                            cliente.Contrato.FechaFinContrato = row.FechaFinContrato;
-
-                            cliente.Contrato.EstatusContrato = new ML.EstatusContrato();
-                            cliente.Contrato.EstatusContrato.IdEstatusContrato = row.IdEstatusContrato;
-                            cliente.Contrato.EstatusContrato.Nombre = row.NombreEstatusContrato;
-
-                            cliente.Contrato.Costo = new ML.Costo();
-                            cliente.Contrato.Costo.IdCosto = row.IdCosto;
-                            cliente.Contrato.Costo.Letras = row.Letras;
-                            cliente.Contrato.Costo.CostoTotal = row.CostoTotal;
-                            cliente.Contrato.Costo.TotalxMetro = row.TotalxMetro;
-                            cliente.Contrato.Costo.CostoxMetro = row.CostoxMetro;
-
-                            cliente.Contrato.Costo.Pago = new ML.Pago();
-                            cliente.Contrato.Costo.Pago.IdPago = row.IdPago;
-                            cliente.Contrato.Costo.Pago.Enganche = row.Enganche;
-                            cliente.Contrato.Costo.Pago.DiasPago = row.DiasPago;
-                            cliente.Contrato.Costo.Pago.Intereses = row.Intereses;
-                            cliente.Contrato.Costo.Pago.MensualidadMinima = row.MensualidadMinima;
-
-                            cliente.Contrato.Costo.Pago.MetodoPago = new ML.MetodoPago();
-                            cliente.Contrato.Costo.Pago.MetodoPago.IdMetodoPago = row.IdMetodoPago;
-                            cliente.Contrato.Costo.Pago.MetodoPago.Nombre = row.NombreMetodoPago;
-
-                            cliente.Contrato.Ubicacion = new ML.Ubicacion();
-                            cliente.Contrato.Ubicacion.IdUbicacion = row.IdUbicacion;
-                            cliente.Contrato.Ubicacion.Desarrollo = row.Desarrollo;
-                            cliente.Contrato.Ubicacion.Manzana = row.Manzana;
-                            cliente.Contrato.Ubicacion.Lote = row.Lote;
-
-                            cliente.Contrato.Ubicacion.Estatus = new ML.Estatus();
-                            cliente.Contrato.Ubicacion.Estatus.IdEstatus = row.IdEstatus;
-                            cliente.Contrato.Ubicacion.Estatus.Nombre = row.NombreEstatus;
-
-                            cliente.Contrato.Ubicacion.Colaborador = new ML.Colaborador();
-                            cliente.Contrato.Ubicacion.Colaborador.IdColaborador = row.IdColaborador;
-                            cliente.Contrato.Ubicacion.Colaborador.Nombre = row.NombreColaborador;
-                            cliente.Contrato.Ubicacion.Colaborador.ApellidoPaterno = row.ApellidoPaternoColaborador;
-                            cliente.Contrato.Ubicacion.Colaborador.ApellidoMaterno = row.ApellidoMaternoColaborador;
-                            cliente.Contrato.Ubicacion.Colaborador.Segmento = row.Segmento;
+                            cliente = new ML.Cliente
+                            {
+                                IdCliente = row.IdCliente,
+                                Nombre = row.Nombre,
+                                ApellidoPaterno = row.ApellidoPaterno,
+                                ApellidoMaterno = row.ApellidoMaterno,
+                                Edad = row.Edad,
+                                Telefono = row.Telefono,
+                                Observaciones = row.Observaciones,
+                                Vendedor = new ML.Vendedor
+                                {
+                                    IdVendedor = row.IdVendedor,
+                                    Nombre = row.NombreVendedor
+                                },
+                                Direccion = new ML.Direccion
+                                {
+                                    IdDireccion = row.IdDireccion,
+                                    NumeroInterior = row.NumeroInterior,
+                                    Numeroexterior = row.Numeroexterior
+                                },
+                                Contrato = new ML.Contrato
+                                {
+                                    NumeroContrato = row.NumeroContrato,
+                                    FechaInicioContrato = row.FechaInicioContrato,
+                                    FechaFinContrato = row.FechaFinContrato,
+                                    EstatusContrato = new ML.EstatusContrato
+                                    {
+                                        IdEstatusContrato = row.IdEstatusContrato,
+                                        Nombre = row.NombreEstatusContrato
+                                    },
+                                    Costo = new ML.Costo
+                                    {
+                                        IdCosto = row.IdCosto,
+                                        Letras = row.Letras,
+                                        CostoTotal = row.CostoTotal,
+                                        TotalxMetro = row.TotalxMetro,
+                                        CostoxMetro = row.CostoxMetro,
+                                        Pago = new ML.Pago
+                                        {
+                                            IdPago = row.IdPago,
+                                            Enganche = row.Enganche,
+                                            DiasPago = row.DiasPago,
+                                            Intereses = row.Intereses,
+                                            MensualidadMinima = row.MensualidadMinima,
+                                            MetodoPago = new ML.MetodoPago
+                                            {
+                                                IdMetodoPago = row.IdMetodoPago,
+                                                Nombre = row.NombreMetodoPago
+                                            }
+                                        }
+                                    },
+                                    Ubicacion = new ML.Ubicacion
+                                    {
+                                        IdUbicacion = row.IdUbicacion,
+                                        Desarrollo = row.Desarrollo,
+                                        Manzana = row.Manzana,
+                                        Lote = row.Lote,
+                                        Estatus = new ML.Estatus
+                                        {
+                                            IdEstatus = row.IdEstatus,
+                                            Nombre = row.NombreEstatus
+                                        },
+                                        Colaborador = new ML.Colaborador
+                                        {
+                                            IdColaborador = row.IdColaborador,
+                                            Nombre = row.NombreColaborador,
+                                            ApellidoPaterno = row.ApellidoPaternoColaborador,
+                                            ApellidoMaterno = row.ApellidoMaternoColaborador,
+                                            Segmento = row.Segmento
+                                        }
+                                    }
+                                }
+                            };
 
                             result.Objects.Add(cliente);
                         }
@@ -201,67 +273,79 @@ namespace BL
 
                     if (query != null)
                     {
-                        ML.Cliente cliente = new ML.Cliente();
-                        cliente.IdCliente = query.IdCliente;
-                        cliente.Nombre = query.Nombre;
-                        cliente.ApellidoPaterno = query.ApellidoPaterno;
-                        cliente.ApellidoMaterno = query.ApellidoMaterno;
-                        cliente.Edad = query.Edad;
-                        cliente.Telefono = query.Telefono;
-                        cliente.Observaciones = query.Observaciones;
-
-                        cliente.Vendedor = new ML.Vendedor();
-                        cliente.Vendedor.IdVendedor = query.IdVendedor;
-                        cliente.Vendedor.Nombre = query.NombreVendedor;
-
-                        cliente.Direccion = new ML.Direccion();
-                        cliente.Direccion.IdDireccion = query.IdDireccion;
-                        cliente.Direccion.NumeroInterior = query.NumeroInterior;
-                        cliente.Direccion.Numeroexterior = query.Numeroexterior;
-
-                        cliente.Contrato = new ML.Contrato();
-                        cliente.Contrato.NumeroContrato = query.NumeroContrato;
-                        cliente.Contrato.FechaInicioContrato = query.FechaInicioContrato;
-                        cliente.Contrato.FechaFinContrato = query.FechaFinContrato;
-
-                        cliente.Contrato.EstatusContrato = new ML.EstatusContrato();
-                        cliente.Contrato.EstatusContrato.IdEstatusContrato = query.IdEstatusContrato;
-                        cliente.Contrato.EstatusContrato.Nombre = query.NombreEstatusContrato;
-
-                        cliente.Contrato.Costo = new ML.Costo();
-                        cliente.Contrato.Costo.IdCosto = query.IdCosto;
-                        cliente.Contrato.Costo.Letras = query.Letras;
-                        cliente.Contrato.Costo.CostoTotal = query.CostoTotal;
-                        cliente.Contrato.Costo.TotalxMetro = query.TotalxMetro;
-                        cliente.Contrato.Costo.CostoxMetro = query.CostoxMetro;
-
-                        cliente.Contrato.Costo.Pago = new ML.Pago();
-                        cliente.Contrato.Costo.Pago.IdPago = query.IdPago;
-                        cliente.Contrato.Costo.Pago.Enganche = query.Enganche;
-                        cliente.Contrato.Costo.Pago.DiasPago = query.DiasPago;
-                        cliente.Contrato.Costo.Pago.Intereses = query.Intereses;
-                        cliente.Contrato.Costo.Pago.MensualidadMinima = query.MensualidadMinima;
-
-                        cliente.Contrato.Costo.Pago.MetodoPago = new ML.MetodoPago();
-                        cliente.Contrato.Costo.Pago.MetodoPago.IdMetodoPago = query.IdMetodoPago;
-                        cliente.Contrato.Costo.Pago.MetodoPago.Nombre = query.NombreMetodoPago;
-
-                        cliente.Contrato.Ubicacion = new ML.Ubicacion();
-                        cliente.Contrato.Ubicacion.IdUbicacion = query.IdUbicacion;
-                        cliente.Contrato.Ubicacion.Desarrollo = query.Desarrollo;
-                        cliente.Contrato.Ubicacion.Manzana = query.Manzana;
-                        cliente.Contrato.Ubicacion.Lote = query.Lote;
-
-                        cliente.Contrato.Ubicacion.Estatus = new ML.Estatus();
-                        cliente.Contrato.Ubicacion.Estatus.IdEstatus = query.IdEstatus;
-                        cliente.Contrato.Ubicacion.Estatus.Nombre = query.NombreEstatus;
-
-                        cliente.Contrato.Ubicacion.Colaborador = new ML.Colaborador();
-                        cliente.Contrato.Ubicacion.Colaborador.IdColaborador = query.IdColaborador;
-                        cliente.Contrato.Ubicacion.Colaborador.Nombre = query.NombreColaborador;
-                        cliente.Contrato.Ubicacion.Colaborador.ApellidoPaterno = query.ApellidoPaternoColaborador;
-                        cliente.Contrato.Ubicacion.Colaborador.ApellidoMaterno = query.ApellidoMaternoColaborador;
-                        cliente.Contrato.Ubicacion.Colaborador.Segmento = query.Segmento;
+                        ML.Cliente cliente = new ML.Cliente
+                        {
+                            IdCliente = query.IdCliente,
+                            Nombre = query.Nombre,
+                            ApellidoPaterno = query.ApellidoPaterno,
+                            ApellidoMaterno = query.ApellidoMaterno,
+                            Edad = query.Edad,
+                            Telefono = query.Telefono,
+                            Observaciones = query.Observaciones,
+                            Vendedor = new ML.Vendedor
+                            {
+                                IdVendedor = query.IdVendedor,
+                                Nombre = query.NombreVendedor
+                            },
+                            Direccion = new ML.Direccion
+                            {
+                                IdDireccion = query.IdDireccion,
+                                NumeroInterior = query.NumeroInterior,
+                                Numeroexterior = query.Numeroexterior
+                            },
+                            Contrato = new ML.Contrato
+                            {
+                                NumeroContrato = query.NumeroContrato,
+                                FechaInicioContrato = query.FechaInicioContrato,
+                                FechaFinContrato = query.FechaFinContrato,
+                                EstatusContrato = new ML.EstatusContrato
+                                {
+                                    IdEstatusContrato = query.IdEstatusContrato,
+                                    Nombre = query.NombreEstatusContrato
+                                },
+                                Costo = new ML.Costo
+                                {
+                                    IdCosto = query.IdCosto,
+                                    Letras = query.Letras,
+                                    CostoTotal = query.CostoTotal,
+                                    TotalxMetro = query.TotalxMetro,
+                                    CostoxMetro = query.CostoxMetro,
+                                    Pago = new ML.Pago
+                                    {
+                                        IdPago = query.IdPago,
+                                        Enganche = query.Enganche,
+                                        DiasPago = query.DiasPago,
+                                        Intereses = query.Intereses,
+                                        MensualidadMinima = query.MensualidadMinima,
+                                        MetodoPago = new ML.MetodoPago
+                                        {
+                                            IdMetodoPago = query.IdMetodoPago,
+                                            Nombre = query.NombreMetodoPago
+                                        }
+                                    }
+                                },
+                                Ubicacion = new ML.Ubicacion
+                                {
+                                    IdUbicacion = query.IdUbicacion,
+                                    Desarrollo = query.Desarrollo,
+                                    Manzana = query.Manzana,
+                                    Lote = query.Lote,
+                                    Estatus = new ML.Estatus
+                                    {
+                                        IdEstatus = query.IdEstatus,
+                                        Nombre = query.NombreEstatus
+                                    },
+                                    Colaborador = new ML.Colaborador
+                                    {
+                                        IdColaborador = query.IdColaborador,
+                                        Nombre = query.NombreColaborador,
+                                        ApellidoPaterno = query.ApellidoPaternoColaborador,
+                                        ApellidoMaterno = query.ApellidoMaternoColaborador,
+                                        Segmento = query.Segmento
+                                    }
+                                }
+                            }
+                        };
 
                         result.Object = cliente;
 

@@ -13,7 +13,7 @@ namespace ML
 
         public double? Segmento { get; set; }
 
-        public ML.Vendedor? Vendedor { get; set; }
+        public ML.Ubicacion? Ubicacion { get; set; }
 
         public List<object>? Usuarios { get; set; }
     }

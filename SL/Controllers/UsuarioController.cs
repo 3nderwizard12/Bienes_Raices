@@ -35,7 +35,7 @@ namespace SL.Controllers
 
             if (result.Correct)
             {
-                return Ok(result);
+                return Ok(result.Objects);
             }
             else { return NotFound(result); }
         }
@@ -68,14 +68,14 @@ namespace SL.Controllers
             else { return NotFound(result); }
         }
 
-        [HttpPut("Update/{id}")]
-        public IActionResult Update(int id, [FromBody] ML.Usuario usuario)
+        [HttpPut("Update/{idUsuario}")]
+        public IActionResult Update(int idUsuario, [FromBody] ML.Usuario usuario)
         {
             ML.Result result = BL.Usuario.Update(usuario);
 
             if (result.Correct)
             {
-                return Ok(result.Objects);
+                return Ok(result);
             }
             else { return NotFound(result); }
         }
@@ -89,7 +89,7 @@ namespace SL.Controllers
             {
                 return Ok(result);
             }
-            else { return NotFound(); }
+            else { return NotFound(result); }
         }
 
         //[HttpGet("GetByUserName/{userName},{password}")]
@@ -110,4 +110,3 @@ namespace SL.Controllers
         //}
     }
 }
-
