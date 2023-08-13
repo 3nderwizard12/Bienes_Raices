@@ -5,15 +5,13 @@ namespace ML
 	{
         public string NumeroContrato { get; set; } = null!;
 
-        public DateTime? FechaInicioContrato { get; set; }
+        public string FechaInicioContrato { get; set; } = null!;
 
-        public DateTime? FechaFinContrato { get; set; }
+        public string FechaFinContrato { get; set; } = null!;
 
         public ML.Cliente? Cliente { get; set; }
 
         public ML.Costo? Costo { get; set; }
-
-        public ML.Pago? Pago { get; set; }
 
         public ML.EstatusContrato? EstatusContrato { get; set; }
 

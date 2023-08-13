@@ -6,14 +6,13 @@ namespace BL
 	{
         public static ML.Result GetAll()
         {
-
             ML.Result result = new ML.Result();
 
             try
             {
                 using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
                 {
-                    var query = cnn.EstatusContratos.FromSqlRaw($"RolGetAll").ToList();
+                    var query = cnn.EstatusContratos.FromSqlRaw($"Estatus_ContratoGetAll").ToList();
 
                     result.Objects = new List<object>();
 

@@ -3,6 +3,10 @@ namespace ML
 {
 	public class Estatus
 	{
+        public Estatus()
+        {
+
+        }
         public byte IdEstatus { get; set; }
 
         public string Nombre { get; set; } = null!;

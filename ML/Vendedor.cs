@@ -3,6 +3,10 @@ namespace ML
 {
 	public class Vendedor
 	{
+        public Vendedor()
+        {
+
+        }
         public int IdVendedor { get; set; }
 
         public string Nombre { get; set; } = null!;

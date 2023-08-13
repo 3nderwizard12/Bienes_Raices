@@ -3,6 +3,10 @@ namespace ML
 {
 	public class MetodoPago
 	{
+        public MetodoPago()
+        {
+
+        }
         public byte IdMetodoPago { get; set; }
 
         public string Nombre { get; set; } = null!;

@@ -6,7 +6,6 @@ namespace BL
 	{
         public static ML.Result GetAll()
         {
-
             ML.Result result = new ML.Result();
 
             try

@@ -12,29 +12,89 @@
 <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
 
 <div class="container">
-    <h2>Formulario Usuario</h2>
+    <h2>Formulario Cliente</h2>
     <div class="col-md-12">
-        @using (Html.BeginForm("Form", "Usuario", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        @using (Html.BeginForm("Form", "Cliente", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             <div class="col">
-                @Html.LabelFor(model => model.Vendedor.IdVendedor, new { @class = "visually-hidden" })
+                @Html.LabelFor(model => model.IdCliente, new { @class = "visually-hidden" })
 
-                @Html.TextBoxFor(model => model.Vendedor.IdVendedor, new { @class = "visually-hidden form-control" })
+                @Html.TextBoxFor(model => model.IdCliente, new { @class = "visually-hidden form-control" })
 
-                @Html.ValidationMessageFor(model => model.Vendedor.IdVendedor, null, new { @class = "text-danger" })
-
+                @Html.ValidationMessageFor(model => model.IdCliente, null, new { @class = "text-danger" })
             </div>
 
             <div class="col">
-                @Html.LabelFor(model => model.IdUsuario, new { @class = "visually-hidden" })
+                @Html.LabelFor(model => model.Contrato.NumeroContrato, new { @class = "visually-hidden" })
 
-                @Html.TextBoxFor(model => model.IdUsuario, new { @class = "visually-hidden form-control" })
+                @Html.TextBoxFor(model => model.Contrato.NumeroContrato, new { @class = "visually-hidden form-control" })
 
-                @Html.ValidationMessageFor(model => model.IdUsuario, null, new { @class = "text-danger" })
-
+                @Html.ValidationMessageFor(model => model.Contrato.NumeroContrato, null, new { @class = "text-danger" })
             </div>
+
+            <div class="col">
+                @Html.LabelFor(model => model.Contrato.Costo.Pago.IdPago, new { @class = "visually-hidden" })
+
+                @Html.TextBoxFor(model => model.Contrato.Costo.Pago.IdPago, new { @class = "visually-hidden form-control" })
+
+                @Html.ValidationMessageFor(model => model.Contrato.Costo.Pago.IdPago, null, new { @class = "text-danger" })
+            </div>
+
             <div class="row">
 
+                <div class="col">
+                    @Html.LabelFor(model => model.Nombre)
+
+                    @Html.TextBoxFor(model => model.Nombre, new { @class = "form-control" })
+
+                    @Html.ValidationMessageFor(model => model.Nombre, null, new { @class = "text-danger" })
+                </div>
+
+                <div class="col">
+                    @Html.LabelFor(model => model.ApellidoPaterno)
+
+                    @Html.TextBoxFor(model => model.ApellidoPaterno, new { @class = "form-control" })
+
+                    @Html.ValidationMessageFor(model => model.ApellidoPaterno, null, new { @class = "text-danger" })
+                </div>
+
+                <div class="col">
+                    @Html.LabelFor(model => model.ApellidoMaterno)
+
+                    @Html.TextBoxFor(model => model.ApellidoMaterno, new { @class = "form-control" })
+
+                    @Html.ValidationMessageFor(model => model.ApellidoMaterno, null, new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col">
+                    @Html.LabelFor(model => model.Edad)
+
+                    @Html.TextBoxFor(model => model.Edad, new { @class = "form-control" })
+
+                    @Html.ValidationMessageFor(model => model.Edad, null, new { @class = "text-danger" })
+                </div>
+
+                <div class="col">
+                    @Html.LabelFor(model => model.Telefono)
+
+                    @Html.TextBoxFor(model => model.Telefono, new { @class = "form-control" })
+
+                    @Html.ValidationMessageFor(model => model.Telefono, null, new { @class = "text-danger" })
+                </div>
+
+                <div class="col">
+                    @Html.LabelFor(model => model.Observaciones)
+
+                    @Html.TextBoxFor(model => model.Observaciones, new { @class = "form-control" })
+
+                    @Html.ValidationMessageFor(model => model.Observaciones, null, new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="row">
                 <div class="col">
                     @Html.LabelFor(model => model.Vendedor.Nombre)
 
@@ -44,116 +104,194 @@
                 </div>
 
                 <div class="col">
-                    @Html.LabelFor(model => model.Vendedor.ApellidoPaterno)
+                    @Html.LabelFor(model => model.Direccion.Calle)
 
-                    @Html.TextBoxFor(model => model.Vendedor.ApellidoPaterno, new { @class = "form-control" })
+                    @Html.TextBoxFor(model => model.Direccion.Calle, new { @class = "form-control" })
 
-                    @Html.ValidationMessageFor(model => model.Vendedor.ApellidoPaterno, null, new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.Direccion.Calle, null, new { @class = "text-danger" })
                 </div>
 
                 <div class="col">
-                    @Html.LabelFor(model => model.Vendedor.ApellidoMaterno)
+                    @Html.LabelFor(model => model.Direccion.NumeroInterior)
 
-                    @Html.TextBoxFor(model => model.Vendedor.ApellidoMaterno, new { @class = "form-control" })
+                    @Html.TextBoxFor(model => model.Direccion.NumeroInterior, new { @class = "form-control" })
 
-                    @Html.ValidationMessageFor(model => model.Vendedor.ApellidoMaterno, null, new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="row">
-
-                <div class="col">
-                    @Html.LabelFor(model => model.Vendedor.Curp)
-
-                    @Html.TextBoxFor(model => model.Vendedor.Curp, new { @class = "form-control" })
-
-                    @Html.ValidationMessageFor(model => model.Vendedor.Curp, null, new { @class = "text-danger" })
-                </div>
-
-                <div class="col">
-                    @Html.LabelFor(model => model.Vendedor.Rfc)
-
-                    @Html.TextBoxFor(model => model.Vendedor.Rfc, new { @class = "form-control" })
-
-                    @Html.ValidationMessageFor(model => model.Vendedor.Rfc, null, new { @class = "text-danger" })
-                </div>
-
-                <div class="col">
-                    @Html.LabelFor(model => model.Vendedor.Foto)
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1"><i class="fa-solid fa-image"></i></span>
-                        <input id="inpImagen" type='file' class="form-control" name="inpImagen" onchange="validateFile(this), visualizarImagen(this);  " />
-                    </div>
-                    @if (Model.Vendedor.Foto == null || Model.Vendedor.Foto == "")
-                    {
-                        <img id="Img" src="~/Images/guest-user.png" style="width:250px ; height:250px" />
-                    }
-                    else
-                    {
-                        @Html.HiddenFor(model => model.Vendedor.Foto)
-                        <img id="Img" src="data:image/*;base64,@Model.Vendedor.Foto" style="width:250px ; height:250px" />
-                    }
+                    @Html.ValidationMessageFor(model => model.Direccion.NumeroInterior, null, new { @class = "text-danger" })
                 </div>
             </div>
 
             <div class="row">
-
                 <div class="col">
-                    @Html.LabelFor(model => model.Vendedor.Email)
+                    @Html.LabelFor(model => model.Direccion.Numeroexterior)
 
-                    @Html.TextBoxFor(model => model.Vendedor.Email, new { @class = "form-control" })
+                    @Html.TextBoxFor(model => model.Direccion.Numeroexterior, new { @class = "form-control" })
 
-                    @Html.ValidationMessageFor(model => model.Vendedor.Email, null, new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.Direccion.Numeroexterior, null, new { @class = "text-danger" })
                 </div>
 
                 <div class="col">
-                    @Html.LabelFor(model => model.Vendedor.Celular)
+                    @Html.LabelFor(model => model.Contrato.Costo.Pago.Enganche)
 
-                    @Html.TextBoxFor(model => model.Vendedor.Celular, new { @class = "form-control" })
+                    @Html.TextBoxFor(model => model.Contrato.Costo.Pago.Enganche, new { @class = "form-control" })
 
-                    @Html.ValidationMessageFor(model => model.Vendedor.Celular, null, new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.Contrato.Costo.Pago.Enganche, null, new { @class = "text-danger" })
                 </div>
 
                 <div class="col">
-                    @Html.LabelFor(model => model.Username)
+                    @Html.LabelFor(model => model.Contrato.Costo.Pago.Enganche)
 
-                    @Html.TextBoxFor(model => model.Username, new { @class = "form-control" })
+                    @Html.TextBoxFor(model => model.Contrato.Costo.Pago.Enganche, new { @class = "form-control" })
 
-                    @Html.ValidationMessageFor(model => model.Username, null, new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.Contrato.Costo.Pago.Enganche, null, new { @class = "text-danger" })
                 </div>
-
             </div>
 
             <div class="row">
-
                 <div class="col">
-                    @Html.LabelFor(model => model.Password)
+                    @Html.LabelFor(model => model.Contrato.Costo.Pago.DiasPago)
 
-                    @Html.TextBoxFor(model => model.Password, new { Type = "password", @class = "form-control" })
+                    @Html.TextBoxFor(model => model.Contrato.Costo.Pago.DiasPago, new { @class = "form-control" })
 
-                    @*<input type="password" name="password" class="form-control" id="logpass" autocomplete="off">*@
-
-                    @Html.ValidationMessageFor(model => model.Password, null, new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.Contrato.Costo.Pago.DiasPago, null, new { @class = "text-danger" })
                 </div>
 
                 <div class="col">
-                    @Html.LabelFor(model => model.Rol)
+                    @Html.LabelFor(model => model.Contrato.Costo.Pago.MetodoPago.IdMetodoPago)
                     <div class="input-group">
-                        <span class="input-group-text"><i class="fa-solid fa-user-group"></i></span>
+                        @Html.DropDownListFor(model => model.Contrato.Costo.Pago.MetodoPago.IdMetodoPago, new SelectList(Model.Contrato.Costo.Pago.MetodoPago.MetodosPago, "IdMetodoPago", "Nombre"), "Selecciona una opción", new { @class = "form-control" })
 
-                        @Html.DropDownListFor(model => model.Rol.IdRol, new SelectList(Model.Rol.Roles, "IdRol", "Nombre"), "Selecciona una opción", new { @class = "form-control" })
-
-                        @Html.ValidationMessageFor(model => model.Rol.IdRol, null, new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.Contrato.Costo.Pago.MetodoPago.IdMetodoPago, null, new { @class = "text-danger" })
                     </div>
                 </div>
 
+                <div class="col">
+                    @Html.LabelFor(model => model.Contrato.Costo.Pago.Intereses)
+
+                    @Html.TextBoxFor(model => model.Contrato.Costo.Pago.Intereses, new { @class = "form-control" })
+
+                    @Html.ValidationMessageFor(model => model.Contrato.Costo.Pago.Intereses, null, new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    @Html.LabelFor(model => model.Contrato.Costo.Pago.MensualidadMinima)
+
+                    @Html.TextBoxFor(model => model.Contrato.Costo.Pago.MensualidadMinima, new { @class = "form-control" })
+
+                    @Html.ValidationMessageFor(model => model.Contrato.Costo.Pago.MensualidadMinima, null, new { @class = "text-danger" })
+                </div>
+
+                <div class="col">
+                    @Html.LabelFor(model => model.Contrato.Costo.Letras)
+
+                    @Html.TextBoxFor(model => model.Contrato.Costo.Letras, new { @class = "form-control" })
+
+                    @Html.ValidationMessageFor(model => model.Contrato.Costo.Letras, null, new { @class = "text-danger" })
+                </div>
+
+                <div class="col">
+                    @Html.LabelFor(model => model.Contrato.Costo.CostoTotal)
+
+                    @Html.TextBoxFor(model => model.Contrato.Costo.CostoTotal, new { @class = "form-control" })
+
+                    @Html.ValidationMessageFor(model => model.Contrato.Costo.CostoTotal, null, new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    @Html.LabelFor(model => model.Contrato.Costo.TotalxMetro)
+
+                    @Html.TextBoxFor(model => model.Contrato.Costo.TotalxMetro, new { @class = "form-control" })
+
+                    @Html.ValidationMessageFor(model => model.Contrato.Costo.TotalxMetro, null, new { @class = "text-danger" })
+                </div>
+
+                <div class="col">
+                    @Html.LabelFor(model => model.Contrato.Costo.CostoxMetro)
+
+                    @Html.TextBoxFor(model => model.Contrato.Costo.CostoxMetro, new { @class = "form-control" })
+
+                    @Html.ValidationMessageFor(model => model.Contrato.Costo.CostoxMetro, null, new { @class = "text-danger" })
+                </div>
+
+                <div class="col">
+                    @Html.LabelFor(model => model.Contrato.NumeroContrato)
+
+                    @Html.TextBoxFor(model => model.Contrato.NumeroContrato, new { @class = "form-control" })
+
+                    @Html.ValidationMessageFor(model => model.Contrato.NumeroContrato, null, new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    @Html.LabelFor(model => model.Contrato.FechaInicioContrato)
+
+                    @Html.TextBoxFor(model => model.Contrato.FechaInicioContrato, new { @class = "form-control" })
+
+                    @Html.ValidationMessageFor(model => model.Contrato.FechaInicioContrato, null, new { @class = "text-danger" })
+                </div>
+
+                <div class="col">
+                    @Html.LabelFor(model => model.Contrato.FechaFinContrato)
+
+                    @Html.TextBoxFor(model => model.Contrato.FechaFinContrato, new { @class = "form-control" })
+
+                    @Html.ValidationMessageFor(model => model.Contrato.FechaFinContrato, null, new { @class = "text-danger" })
+                </div>
+
+                <div class="col">
+                    @Html.LabelFor(model => model.Contrato.EstatusContrato.IdEstatusContrato)
+                    <div class="input-group">
+                        @Html.DropDownListFor(model => model.Contrato.EstatusContrato.IdEstatusContrato, new SelectList(Model.Contrato.EstatusContrato.EstatusContratos, "IdEstatusContrato", "Nombre"), "Selecciona una opción", new { @class = "form-control" })
+
+                        @Html.ValidationMessageFor(model => model.Contrato.EstatusContrato.IdEstatusContrato, null, new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    @Html.LabelFor(model => model.Contrato.Ubicacion.Desarrollo)
+
+                    @Html.TextBoxFor(model => model.Contrato.Ubicacion.Desarrollo, new { @class = "form-control" })
+
+                    @Html.ValidationMessageFor(model => model.Contrato.Ubicacion.Desarrollo, null, new { @class = "text-danger" })
+                </div>
+
+                <div class="col">
+                    @Html.LabelFor(model => model.Contrato.Ubicacion.Manzana)
+
+                    @Html.TextBoxFor(model => model.Contrato.Ubicacion.Manzana, new { @class = "form-control" })
+
+                    @Html.ValidationMessageFor(model => model.Contrato.Ubicacion.Manzana, null, new { @class = "text-danger" })
+                </div>
+
+                <div class="col">
+                    @Html.LabelFor(model => model.Contrato.Ubicacion.Lote)
+
+                    @Html.TextBoxFor(model => model.Contrato.Ubicacion.Lote, new { @class = "form-control" })
+
+                    @Html.ValidationMessageFor(model => model.Contrato.Ubicacion.Lote, null, new { @class = "text-danger" })
+                </div>
+
+                <div class="col">
+                    @Html.LabelFor(model => model.Contrato.Ubicacion.Estatus.IdEstatus)
+                    <div class="input-group">
+                        @Html.DropDownListFor(model => model.Contrato.Ubicacion.Estatus.IdEstatus, new SelectList(Model.Contrato.Ubicacion.Estatus.Estatuses, "IdEstatus", "Nombre"), "Selecciona una opción", new { @class = "form-control" })
+
+                        @Html.ValidationMessageFor(model => model.Contrato.Ubicacion.Estatus.IdEstatus, null, new { @class = "text-danger" })
+                    </div>
+                </div>
             </div>
 
             <div class="row">
                 <div class="col text-center">
                     <input type="submit" value="Guardar" class="btn btn-success " />
 
-                    @Html.ActionLink("Regresar", "GetAll", "Usuario", htmlAttributes: new { @class = "btn btn-danger" })
+                    @Html.ActionLink("Regresar", "GetAll", "Cliente", htmlAttributes: new { @class = "btn btn-danger" })
                 </div>
             </div>
         }
