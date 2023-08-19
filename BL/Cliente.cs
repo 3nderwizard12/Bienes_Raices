@@ -211,7 +211,7 @@ namespace BL
                                         {
                                             IdPago = row.IdPago,
                                             Enganche = row.Enganche,
-                                            DiasPago = row.DiasPago,
+                                            //DiasPago = row.DiasPago,
                                             Intereses = row.Intereses,
                                             MensualidadMinima = row.MensualidadMinima,
                                             MetodoPago = new ML.MetodoPago
@@ -314,7 +314,7 @@ namespace BL
                                     {
                                         IdPago = query.IdPago,
                                         Enganche = query.Enganche,
-                                        DiasPago = query.DiasPago,
+                                        //DiasPago = query.DiasPago,
                                         Intereses = query.Intereses,
                                         MensualidadMinima = query.MensualidadMinima,
                                         MetodoPago = new ML.MetodoPago

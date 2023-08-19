@@ -9,7 +9,7 @@ public partial class Pago
 
     public double Enganche { get; set; }
 
-    public string DiasPago { get; set; } = null!;
+    public string? DiasPago { get; set; }
 
     public byte IdMetodoPago { get; set; }
 

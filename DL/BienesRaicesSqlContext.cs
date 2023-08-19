@@ -209,7 +209,9 @@ public partial class BienesRaicesSqlContext : DbContext
 
             entity.ToTable("Pago");
 
-            entity.Property(e => e.DiasPago).HasColumnType("date");
+            entity.Property(e => e.DiasPago)
+                .HasMaxLength(20)
+                .IsUnicode(false);
 
             entity.HasOne(d => d.IdMetodoPagoNavigation).WithMany(p => p.Pagos)
                 .HasForeignKey(d => d.IdMetodoPago)
