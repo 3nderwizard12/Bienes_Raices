@@ -20,17 +20,38 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="GetAll">Usuarios</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Cliente" asp-action="GetAll">Cliente</a>
-                        </li>
-                    </ul>
+                    @using Microsoft.AspNetCore.Http;
+                    @inject IHttpContextAccessor HttpContextAccessor
+                    @{
+                        string Rol = HttpContextAccessor.HttpContext.Session.GetString("Rol");
+                    }
+                    @if (Rol == "Administador")
+                    {
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="GetAll">Usuarios</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Cliente" asp-action="GetAll">Cliente</a>
+                            </li>
+                        </ul>
+                    }
+                    else
+                    {
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Cliente" asp-action="GetAll">Cliente</a>
+                            </li>
+                        </ul>
+                    }
+
+                    <a class="btn btn-danger text-dark" asp-area="" asp-controller="Usuario" asp-action="Login">Log Out</a>
                 </div>
             </div>
         </nav>

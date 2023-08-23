@@ -279,7 +279,6 @@ namespace BL
         {
             ML.Result result = new ML.Result();
 
-
             try
             {
                 using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
@@ -324,6 +323,63 @@ namespace BL
                 result.Correct = false;
                 result.Ex = ex;
                 result.ErrorMessage = "An error ocurred while inserting the record into the table" + result.Ex;
+                //throw;
+            }
+            return result;
+        }
+
+        public static ML.Result Password(ML.Usuario usuario)
+        {
+            ML.Result result = new ML.Result();
+
+            try
+            {
+                using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
+                {
+                    int query = cnn.Database.ExecuteSqlRaw(
+                        "EXEC PasswordAdd @Username, @Password",
+                        new SqlParameter("@Username", usuario.Username),
+                        new SqlParameter("@Password", usuario.Password));
+
+                    if (query > 0)
+                    {
+                        result.Correct = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Correct = false;
+                result.Ex = ex;
+                result.ErrorMessage = "An error ocurred while inserting the record into the table" + result.Ex;
+                //throw;
+            }
+            return result;
+        }
+
+        public static ML.Result FindByEmail(string Email)
+        {
+
+            ML.Result result = new ML.Result();
+
+            try
+            {
+                using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
+                {
+                    var query = cnn.Usuarios.FromSqlRaw($"UsuarioFindByEmail '{Email}'").ToList().FirstOrDefault();
+
+                    if (query != null)
+                    {
+                        result.Correct = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                result.Correct = false;
+                result.Ex = ex;
+                result.ErrorMessage = "An error occurred while inserting the record into the table" + result.Ex;
                 //throw;
             }
             return result;

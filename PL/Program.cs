@@ -7,19 +7,27 @@ builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>
 {
-    options.Cookie.Name = "SessionLogin";
+    options.Cookie.Name = "Session";
     options.IdleTimeout = TimeSpan.FromMinutes(30);
-    options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
+builder.Services.AddControllersWithViews();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
 {
     app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
 }
+
 app.UseStaticFiles();
 
 app.UseRouting();
@@ -28,8 +36,17 @@ app.UseSession();
 
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.UseEndpoints(endpoints =>
+{
+    app.MapControllerRoute(
+        name: "NewPassword",
+        pattern: "Usuario/NewPassword/{email}",
+        defaults: new { controller = "Usuario", Action = "NewPassword" });
+
+
+    app.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Usuario}/{action=Login}/{id?}");
+});
 
 app.Run();

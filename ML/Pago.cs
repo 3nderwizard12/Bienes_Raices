@@ -7,7 +7,7 @@ namespace ML
 
         public double Enganche { get; set; }
 
-        public string DiasPago { get; set; }
+        public string? DiasPago { get; set; }
 
         public ML.MetodoPago? MetodoPago { get; set; }
 

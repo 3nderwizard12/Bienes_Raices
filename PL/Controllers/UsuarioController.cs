@@ -1,18 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 using System.Security.Cryptography;
+using System.Net.Mail;
+using System.Web;
 
 namespace PL.Controllers
 {
     public class UsuarioController : Controller
     {
-        private IHostingEnvironment environment;
-        private IConfiguration configuration;
+        private IHostingEnvironment _environment;
+        private IConfiguration _configuration;
+        private readonly IWebHostEnvironment _hostingEnvironment;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UsuarioController(IHostingEnvironment _environment, IConfiguration _configuration)
+        public UsuarioController(IHttpContextAccessor httpContextAccessor, IWebHostEnvironment hostingEnvironment, IHostingEnvironment environment, IConfiguration configuration)
         {
-            environment = _environment;
-            configuration = _configuration;
+            _httpContextAccessor = httpContextAccessor;
+            _hostingEnvironment = hostingEnvironment;
+            _environment = environment;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -25,7 +31,7 @@ namespace PL.Controllers
 
             using (var client = new HttpClient())
             {
-                string urlApi = configuration["urlWebApi"];
+                string urlApi = _configuration["urlWebApi"];
 
                 string requestUri = $"Usuario/GetAll";
 
@@ -56,7 +62,7 @@ namespace PL.Controllers
 
             using (var client = new HttpClient())
             {
-                string urlApi = configuration["urlWebApi"];
+                string urlApi = _configuration["urlWebApi"];
 
                 string nombre = usuario?.Vendedor?.Nombre;
                 string apellidoPaterno = usuario?.Vendedor?.ApellidoPaterno;
@@ -120,7 +126,7 @@ namespace PL.Controllers
                 ML.Result result = new ML.Result();
                 using (var client = new HttpClient())
                 {
-                    string urlApi = configuration["urlWebApi"];
+                    string urlApi = _configuration["urlWebApi"];
                     client.BaseAddress = new Uri(urlApi);
 
                     var responseTask = client.GetAsync("Usuario/GetById/" + idUsuario);
@@ -162,7 +168,7 @@ namespace PL.Controllers
 
             using (var client = new HttpClient())
             {
-                string urlApi = configuration["urlWebApi"];
+                string urlApi = _configuration["urlWebApi"];
                 client.BaseAddress = new Uri(urlApi);
 
                 HttpResponseMessage result;
@@ -235,7 +241,7 @@ namespace PL.Controllers
         {
             using (var client = new HttpClient())
             {
-                string urlApi = configuration["urlWebApi"];
+                string urlApi = _configuration["urlWebApi"];
                 client.BaseAddress = new Uri(urlApi);
 
                 var postTask = client.GetAsync("Usuario/Delete/" + idUsuario);
@@ -257,7 +263,7 @@ namespace PL.Controllers
         }
 
         [HttpPost]
-        private JsonResult CambiarStatus(int idUsuario, bool status)
+        private JsonResult CambiarEstatus(int idUsuario, bool status)
         {
             ML.Result result = BL.Usuario.CambiarEstatus(idUsuario, status);
 
@@ -285,32 +291,133 @@ namespace PL.Controllers
 
         public IActionResult Login()
         {
+            ML.Usuario usuario = new ML.Usuario();
+            string username = _httpContextAccessor.HttpContext.Session.GetString("Username");
+            if (!string.IsNullOrEmpty(username))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            return View(usuario);
+        }
+
+        [HttpPost]
+        public IActionResult Login(ML.Usuario usuario, string password)
+        {
+            var bcrypt = new Rfc2898DeriveBytes(password, new byte[0], 10000, HashAlgorithmName.SHA256);
+            // Obtener el hash resultante para la contraseña ingresada 
+            var passwordHash = bcrypt.GetBytes(20);
+
+            ML.Result resultUsuario = BL.Usuario.GetByUsername(usuario.Username);
+            usuario = (ML.Usuario)resultUsuario.Object;
+
+            if (usuario.Estatus != true && usuario.Password == null)
+            {
+                // Insertar usuario en la base de datos
+                usuario.Password = passwordHash;
+                usuario.Estatus = true;
+                ML.Result result = BL.Usuario.Password(usuario);
+                return View();
+            }
+            else
+            {
+                if (usuario.Password.SequenceEqual(passwordHash))
+                {
+                    _httpContextAccessor.HttpContext.Session.SetString("Username", usuario.Username);
+                    _httpContextAccessor.HttpContext.Session.SetString("Rol", usuario.Rol.Nombre);
+                    return RedirectToAction("Index", "Home");
+                }
+            }
             return View();
         }
 
-        //[HttpPost]
-        //public IActionResult Login(string username, string password)
-        //{
-        //    ML.Result result = BL.Usuario.GetByUsername(username);
+        [HttpGet]
+        public ActionResult CambiarPassword()
+        {
+            return View();
+        }
 
-        //    if (result.Correct)
-        //    {
-        //        ML.Usuario usuario = (ML.Usuario)result.Object;
-        //        if (password == usuario.Password)
-        //        {
-        //            return RedirectToAction("Index", "Home");
-        //        }
-        //        else
-        //        {
-        //            ViewBag.Message = "Contraseña Invalida";
-        //            return PartialView("ModalLogin");
-        //        }
-        //    }
-        //    else
-        //    {
-        //        ViewBag.Message = "Usuario Invalido";
-        //        return PartialView("ModalLogin");
-        //    }
-        //}
+        [HttpPost]
+        public ActionResult CambiarPassword(string email)
+        {
+            ML.Result result = BL.Usuario.FindByEmail(email);
+            if (result.Correct)
+            {
+                string emailOrigen = _configuration["emailOrigen"];
+
+                MailMessage mailMessage = new MailMessage(emailOrigen, email, "Recuperar Contraseña", "<p>Correo para recuperar contraseña</p>");
+                mailMessage.IsBodyHtml = true;
+                //string contenidoHTML = System.IO.File.ReadAllText(configuration["contenidoHTML"]);
+                string contenidoHTML = System.IO.File.ReadAllText(Path.Combine(_hostingEnvironment.ContentRootPath, "wwwroot", "Templates", "Email.cshtml"));
+                mailMessage.Body = contenidoHTML;
+                string url = _configuration["url"] + HttpUtility.UrlEncode(email);
+                mailMessage.Body = mailMessage.Body.Replace("{link}", url);
+                SmtpClient smtpClient = new SmtpClient("smtp.gmail.com");
+                smtpClient.EnableSsl = true;
+                smtpClient.UseDefaultCredentials = false;
+                smtpClient.Port = 587;
+                smtpClient.Credentials = new System.Net.NetworkCredential(emailOrigen, _configuration["appPassword"]);
+
+                smtpClient.Send(mailMessage);
+                smtpClient.Dispose();
+
+                ViewBag.Modal = "show";
+                ViewBag.Message = "Se ha enviado un correo de confirmación a tu correo electronico";
+                return View();
+            }
+            else
+            {
+                ViewBag.Modal = "show";
+                ViewBag.Mensaje = "El correo es incorrecto";
+                return View();
+            }
+        }
+
+        [HttpGet]
+        public ActionResult Email()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult NewPassword(string email)
+        {
+            ML.Usuario usuario = new ML.Usuario();
+            usuario.Vendedor = new ML.Vendedor();
+            usuario.Vendedor.Email = email;
+
+            return View(usuario);
+        }
+
+        [HttpPost]
+        public ActionResult NewPassword(ML.Usuario usuario, string password)
+        {
+            var bcrypt = new Rfc2898DeriveBytes(password, new byte[0], 10000, HashAlgorithmName.SHA256);
+
+            var passwordHash = bcrypt.GetBytes(20);
+            usuario.Password = passwordHash;
+
+            ML.Result result = BL.Usuario.Update(usuario);
+
+            if (result.Correct)
+            {
+                ViewBag.Modal = "show";
+                ViewBag.Message = "Se ha actualizado correctamente";
+                return RedirectToAction("Login", "Usuario");
+            }
+            else
+            {
+                ViewBag.Modal = "show";
+                ViewBag.Mensaje = "Error al actualizar la contraseña";
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public IActionResult Logout()
+        {
+            _httpContextAccessor.HttpContext.Session.Clear();
+
+            return RedirectToAction("Login");
+        }
     }
 }
