@@ -45,6 +45,12 @@
                                                 </div>
                                                 <button type="submit" href="#" class="btn mt-4">submit</button>
                                             }
+                                            @if (ViewBag.Modal != null)
+                                            {
+                                                <div class="alert alert-danger" role="alert">
+                                                    @ViewBag.Message
+                                                </div>
+                                            }
                                             <p class="mb-0 mt-4 text-center"><a href="Usuario/CambiarPassword" class="link">Forgot your password?</a></p>
                                         </div>
                                     </div>
@@ -64,6 +70,12 @@
                                                     <i class="input-icon uil uil-lock-alt"></i>
                                                 </div>
                                                 <button type="submit" href="#" class="btn mt-4">submit</button>
+                                                @if (ViewBag.Modal != null)
+                                                {
+                                                    <div class="alert alert-danger" role="alert">
+                                                        @ViewBag.Message
+                                                    </div>
+                                                }
                                             }
                                         </div>
                                     </div>

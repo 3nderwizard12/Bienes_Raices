@@ -3,6 +3,7 @@ using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 using System.Security.Cryptography;
 using System.Net.Mail;
 using System.Web;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace PL.Controllers
 {
@@ -198,42 +199,71 @@ namespace PL.Controllers
         [HttpPost]
         public ActionResult Form(ML.Usuario usuario, string password)
         {
-            IFormFile file = Request.Form.Files["inpImagen"];
-
-            if (file != null)
+            if (ModelState.IsValid)
             {
-                usuario.Vendedor.Foto = Convert.ToBase64String(ConvertToBytes(file));
-            }
+                IFormFile file = Request.Form.Files["inpImagen"];
 
-            if (!string.IsNullOrEmpty(password))
-            {
-                var bcrypt = new Rfc2898DeriveBytes(password, new byte[0], 10000, HashAlgorithmName.SHA256);
-                usuario.Password = bcrypt.GetBytes(20);
-            }
+                if (file != null)
+                {
+                    usuario.Vendedor.Foto = Convert.ToBase64String(ConvertToBytes(file));
+                }
 
-            ML.Result result;
+                if (!string.IsNullOrEmpty(password))
+                {
+                    var bcrypt = new Rfc2898DeriveBytes(password, new byte[0], 10000, HashAlgorithmName.SHA256);
+                    usuario.Password = bcrypt.GetBytes(20);
+                }
 
-            if (usuario.IdUsuario == 0)
-            {
-                // Add
-                result = BL.Usuario.Add(usuario);
+                ML.Result result;
+
+                if (usuario.IdUsuario == 0)
+                {
+                    if (usuario.Password != null)
+                    {
+                        usuario.Estatus = true;
+                    }
+                    else
+                    {
+                        usuario.Estatus = false;
+                    }
+                    // Add
+                    result = BL.Usuario.Add(usuario);
+                }
+                else
+                {
+                    if (usuario.Password != null)
+                    {
+                        usuario.Estatus = true;
+                    }
+                    else
+                    {
+                        usuario.Estatus = false;
+                    }
+                    // Update
+                    result = BL.Usuario.Update(usuario);
+                }
+
+                if (result.Correct)
+                {
+                    ViewBag.Message = usuario.IdUsuario == 0 ? "Registro correctamente insertado" : "Registro correctamente actualizado";
+                }
+                else
+                {
+                    ViewBag.Message = usuario.IdUsuario == 0 ? "Ocurrio un error al insertar el registro" : "Ocurrio un error al actualizar el registro";
+                }
+
+                return View("Modal");
             }
             else
             {
-                // Update
-                result = BL.Usuario.Update(usuario);
-            }
+                ML.Result resultRol = BL.Rol.GetAll();
 
-            if (result.Correct)
-            {
-                ViewBag.Message = usuario.IdUsuario == 0 ? "Registro correctamente insertado" : "Registro correctamente actualizado";
-            }
-            else
-            {
-                ViewBag.Message = usuario.IdUsuario == 0 ? "Ocurrio un error al insertar el registro" : "Ocurrio un error al actualizar el registro";
-            }
+                usuario = new ML.Usuario { Vendedor = new ML.Vendedor(), Rol = new ML.Rol() };
 
-            return View("Modal");
+                usuario.Rol.Roles = resultRol.Objects;
+
+                return View(usuario);
+            }
         }
 
         [HttpGet]
@@ -293,41 +323,62 @@ namespace PL.Controllers
         {
             ML.Usuario usuario = new ML.Usuario();
             string username = _httpContextAccessor.HttpContext.Session.GetString("Username");
+
             if (!string.IsNullOrEmpty(username))
             {
                 return RedirectToAction("Index", "Home");
             }
+
             return View(usuario);
         }
 
         [HttpPost]
         public IActionResult Login(ML.Usuario usuario, string password)
         {
+            ML.Result resultUsuario = BL.Usuario.GetByUsername(usuario.Username);
+
+            if (!resultUsuario.Correct)
+            {
+                ViewBag.Modal = "show";
+                ViewBag.Message = "El Usuario no existe";
+                return View();
+            }
+
             var bcrypt = new Rfc2898DeriveBytes(password, new byte[0], 10000, HashAlgorithmName.SHA256);
             // Obtener el hash resultante para la contraseña ingresada 
             var passwordHash = bcrypt.GetBytes(20);
 
-            ML.Result resultUsuario = BL.Usuario.GetByUsername(usuario.Username);
-            usuario = (ML.Usuario)resultUsuario.Object;
+            ML.Usuario fetchedUsuario = new ML.Usuario();
 
-            if (usuario.Estatus != true && usuario.Password == null)
+            fetchedUsuario = (ML.Usuario)resultUsuario.Object;
+
+            if (!fetchedUsuario.Estatus)
             {
                 // Insertar usuario en la base de datos
                 usuario.Password = passwordHash;
                 usuario.Estatus = true;
+
                 ML.Result result = BL.Usuario.Password(usuario);
                 return View();
             }
             else
             {
-                if (usuario.Password.SequenceEqual(passwordHash))
+
+                if (!fetchedUsuario.Password.SequenceEqual(passwordHash))
                 {
-                    _httpContextAccessor.HttpContext.Session.SetString("Username", usuario.Username);
-                    _httpContextAccessor.HttpContext.Session.SetString("Rol", usuario.Rol.Nombre);
+                    ViewBag.Modal = "show";
+                    ViewBag.Message = "La contraseña no coincide";
+                    return View();
+                }
+                else
+                {
+                    _httpContextAccessor.HttpContext.Session.SetInt32("Id", fetchedUsuario.IdUsuario);
+                    _httpContextAccessor.HttpContext.Session.SetString("Username", fetchedUsuario.Username);
+                    _httpContextAccessor.HttpContext.Session.SetString("Rol", fetchedUsuario.Rol.Nombre);
+
                     return RedirectToAction("Index", "Home");
                 }
             }
-            return View();
         }
 
         [HttpGet]

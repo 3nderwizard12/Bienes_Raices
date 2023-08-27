@@ -14,7 +14,7 @@ namespace BL
                 using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
                 {
                     int query = cnn.Database.ExecuteSqlRaw(
-                        "EXEC UsuarioAdd @NombreVendedor, @ApellidoPaternoVendedor, @ApellidoMaternoVendedor, @CurpVendedor, @RfcVendedor, @FotoVendedor, @EmailVendedor, @CelularVendedor, @Username, @Password, @IdRol",
+                        "EXEC UsuarioAdd @NombreVendedor, @ApellidoPaternoVendedor, @ApellidoMaternoVendedor, @CurpVendedor, @RfcVendedor, @FotoVendedor, @EmailVendedor, @CelularVendedor, @Username, @Password, @Estatus, @IdRol",
                         new SqlParameter("@NombreVendedor", usuario.Vendedor.Nombre),
                         new SqlParameter("@ApellidoPaternoVendedor", usuario.Vendedor.ApellidoPaterno),
                         new SqlParameter("@ApellidoMaternoVendedor", usuario.Vendedor.ApellidoMaterno),
@@ -25,6 +25,7 @@ namespace BL
                         new SqlParameter("@CelularVendedor", usuario.Vendedor.Celular),
                         new SqlParameter("@Username", usuario.Username),
                         new SqlParameter("@Password", usuario.Password),
+                        new SqlParameter("@Estatus", usuario.Estatus),
                         new SqlParameter("@IdRol", usuario.Rol.IdRol));
 
                     if (query > 0)
@@ -95,6 +96,7 @@ namespace BL
                         new SqlParameter("@EmailVendedor", usuario.Vendedor.Email),
                         new SqlParameter("@CelularVendedor", usuario.Vendedor.Celular),
                         new SqlParameter("@Username", usuario.Username),
+                        new SqlParameter("@Estatus", usuario.Estatus),
                         new SqlParameter("@IdRol", usuario.Rol.IdRol));
 
                         if (query > 0)
@@ -117,6 +119,7 @@ namespace BL
                         new SqlParameter("@CelularVendedor", usuario.Vendedor.Celular),
                         new SqlParameter("@Username", usuario.Username),
                         new SqlParameter("@Password", usuario.Password),
+                        new SqlParameter("@Estatus", usuario.Estatus),
                         new SqlParameter("@IdRol", usuario.Rol.IdRol));
 
                         if (query > 0)
@@ -337,9 +340,10 @@ namespace BL
                 using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
                 {
                     int query = cnn.Database.ExecuteSqlRaw(
-                        "EXEC PasswordAdd @Username, @Password",
+                        "EXEC PasswordAdd @Username, @Password, @Estatus",
                         new SqlParameter("@Username", usuario.Username),
-                        new SqlParameter("@Password", usuario.Password));
+                        new SqlParameter("@Password", usuario.Password),
+                        new SqlParameter("@Estatus", usuario.Estatus));
 
                     if (query > 0)
                     {

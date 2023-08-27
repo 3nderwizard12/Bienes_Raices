@@ -33,6 +33,16 @@
                 @Html.ValidationMessageFor(model => model.IdUsuario, null, new { @class = "text-danger" })
 
             </div>
+
+            <div class="col">
+                @Html.LabelFor(model => model.Estatus, new { @class = "visually-hidden" })
+
+                @Html.TextBoxFor(model => model.Estatus, new { @class = "visually-hidden form-control" })
+
+                @Html.ValidationMessageFor(model => model.Estatus, null, new { @class = "text-danger" })
+
+            </div>
+
             <div class="row">
                 <div class="col">
                     @Html.LabelFor(model => model.Vendedor.Nombre)
@@ -63,7 +73,7 @@
                 <div class="col">
                     @Html.LabelFor(model => model.Vendedor.Curp)
 
-                    @Html.TextBoxFor(model => model.Vendedor.Curp, new { @class = "form-control"})
+                    @Html.TextBoxFor(model => model.Vendedor.Curp, new { @class = "form-control" })
 
                     @Html.ValidationMessageFor(model => model.Vendedor.Curp, null, new { @class = "text-danger" })
                 </div>
@@ -71,7 +81,7 @@
                 <div class="col">
                     @Html.LabelFor(model => model.Vendedor.Rfc)
 
-                    @Html.TextBoxFor(model => model.Vendedor.Rfc, new { @class = "form-control"})
+                    @Html.TextBoxFor(model => model.Vendedor.Rfc, new { @class = "form-control" })
 
                     @Html.ValidationMessageFor(model => model.Vendedor.Rfc, null, new { @class = "text-danger" })
                 </div>
@@ -98,7 +108,7 @@
                 <div class="col">
                     @Html.LabelFor(model => model.Vendedor.Email)
 
-                    @Html.TextBoxFor(model => model.Vendedor.Email, new { @class = "form-control"})
+                    @Html.TextBoxFor(model => model.Vendedor.Email, new { @class = "form-control" })
 
                     @Html.ValidationMessageFor(model => model.Vendedor.Email, null, new { @class = "text-danger" })
                 </div>
@@ -106,7 +116,7 @@
                 <div class="col">
                     @Html.LabelFor(model => model.Vendedor.Celular)
 
-                    @Html.TextBoxFor(model => model.Vendedor.Celular, new { @class = "form-control"})
+                    @Html.TextBoxFor(model => model.Vendedor.Celular, new { @class = "form-control" })
 
                     @Html.ValidationMessageFor(model => model.Vendedor.Celular, null, new { @class = "text-danger" })
                 </div>
@@ -114,7 +124,7 @@
                 <div class="col">
                     @Html.LabelFor(model => model.Username)
 
-                    @Html.TextBoxFor(model => model.Username, new { @class = "form-control"})
+                    @Html.TextBoxFor(model => model.Username, new { @class = "form-control" })
 
                     @Html.ValidationMessageFor(model => model.Username, null, new { @class = "text-danger" })
                 </div>
