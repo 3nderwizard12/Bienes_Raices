@@ -1,5 +1,4 @@
-﻿using System;
-namespace ML
+﻿namespace ML
 {
 	public class Rol
 	{
@@ -9,7 +8,7 @@ namespace ML
         }
         public byte IdRol { get; set; }
 
-        public string Nombre { get; set; } = null!;
+        public string? Nombre { get; set; }
 
         public List<object>? Roles { get; set; }
     }

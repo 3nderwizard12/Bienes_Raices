@@ -131,15 +131,6 @@
             </div>
 
             <div class="row">
-                <div class="col">
-                    @Html.LabelFor(model => model.Password)
-
-                    @Html.TextBoxFor(model => model.Password, new { Type = "password", @class = "form-control" })
-
-                    @*<input type="password" name="password" class="form-control" id="logpass" autocomplete="off">*@
-
-                    @Html.ValidationMessageFor(model => model.Password, null, new { @class = "text-danger" })
-                </div>
 
                 <div class="col">
                     @Html.LabelFor(model => model.Rol)

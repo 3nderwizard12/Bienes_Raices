@@ -1,19 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 using System.Security.Cryptography;
-using System.Net.Mail;
-using System.Web;
-using Microsoft.AspNetCore.StaticFiles;
+using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using Azure;
+using System.Collections.Generic;
 
 namespace PL.Controllers
 {
     public class UsuarioController : Controller
     {
+        [Obsolete]
         private IHostingEnvironment _environment;
         private IConfiguration _configuration;
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
+        [Obsolete]
         public UsuarioController(IHttpContextAccessor httpContextAccessor, IWebHostEnvironment hostingEnvironment, IHostingEnvironment environment, IConfiguration configuration)
         {
             _httpContextAccessor = httpContextAccessor;
@@ -23,8 +27,15 @@ namespace PL.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetAll()
+        public ActionResult GetAllJson()
         {
+            string username = _httpContextAccessor.HttpContext.Session.GetString("Username");
+
+            if (string.IsNullOrEmpty(username))
+            {
+                return RedirectToAction("Login", "Usuario");
+            }
+
             ML.Usuario resultUsuario = new ML.Usuario();
             resultUsuario.Vendedor = new ML.Vendedor();
 
@@ -36,6 +47,8 @@ namespace PL.Controllers
 
                 string requestUri = $"Usuario/GetAll";
 
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+
                 var responseTask = client.GetAsync(new Uri(new Uri(urlApi), requestUri));
                 responseTask.Wait();
 
@@ -46,6 +59,8 @@ namespace PL.Controllers
                     var readTask = result.Content.ReadAsAsync<ML.Result>();
                     readTask.Wait();
 
+                    
+
                     foreach (var resultItem in readTask.Result.Objects)
                     {
                         ML.Usuario ResultItemList = Newtonsoft.Json.JsonConvert.DeserializeObject<ML.Usuario>(resultItem.ToString());
@@ -53,6 +68,56 @@ namespace PL.Controllers
                     }
                 }
             }
+            _httpContextAccessor.HttpContext.Session.SetString("Json", JsonConvert.SerializeObject(resultUsuario));
+
+            return View(resultUsuario);
+        }
+
+        [HttpGet]
+        public ActionResult GetAll()
+        {
+            string username = _httpContextAccessor.HttpContext.Session.GetString("Username");
+
+            if (string.IsNullOrEmpty(username))
+            {
+                return RedirectToAction("Login", "Usuario");
+            }
+
+            ML.Usuario resultUsuario = new ML.Usuario();
+            resultUsuario.Vendedor = new ML.Vendedor();
+
+            resultUsuario.Usuarios = new List<object>();
+
+            using (var client = new HttpClient())
+            {
+                string urlApi = _configuration["urlWebApi"];
+                string requestUri = "Usuario/GetAll";
+
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml")); // Specify XML accept header
+
+                var responseTask = client.GetAsync(new Uri(new Uri(urlApi), requestUri));
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+
+                if (result.IsSuccessStatusCode)
+                {
+                    // Assuming the response content is XML
+                    var xmlContent = result.Content.ReadAsStringAsync().Result;
+
+                    // Deserialize XML using XmlSerializer
+                    var serializer = new System.Xml.Serialization.XmlSerializer(typeof(List<ML.Usuario>));
+
+                    using (var reader = new StringReader(xmlContent))
+                    {
+
+                        var ResultItemList = (List<ML.Usuario>)serializer.Deserialize(reader);
+
+                        resultUsuario.Usuarios.Add(ResultItemList);
+                    }
+                }
+            }
+
             return View(resultUsuario);
         }
 
@@ -110,6 +175,13 @@ namespace PL.Controllers
         [HttpGet]
         public ActionResult Form(int? idUsuario)
         {
+            string username = _httpContextAccessor.HttpContext.Session.GetString("Username");
+
+            if (string.IsNullOrEmpty(username))
+            {
+                return RedirectToAction("Login", "Usuario");
+            }
+
             ML.Result resultRol = BL.Rol.GetAll();
 
             ML.Usuario usuario = new ML.Usuario { Vendedor = new ML.Vendedor(), Rol = new ML.Rol() };
@@ -152,7 +224,7 @@ namespace PL.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> FrmAsync(ML.Usuario usuario, string password)
+        public async Task<ActionResult> FrmAsync(ML.Usuario usuario, string pwd)
         {
             IFormFile file = Request.Form.Files["inpImagen"];
 
@@ -161,9 +233,9 @@ namespace PL.Controllers
                 usuario.Vendedor.Foto = Convert.ToBase64String(await ConvertToBytesAsync(file));
             }
 
-            if (!string.IsNullOrEmpty(password))
+            if (!string.IsNullOrEmpty(pwd))
             {
-                var bcrypt = new Rfc2898DeriveBytes(password, new byte[0], 10000, HashAlgorithmName.SHA256);
+                var bcrypt = new Rfc2898DeriveBytes(pwd, new byte[0], 10000, HashAlgorithmName.SHA256);
                 usuario.Password = bcrypt.GetBytes(20);
             }
 
@@ -197,48 +269,26 @@ namespace PL.Controllers
         }
 
         [HttpPost]
-        public ActionResult Form(ML.Usuario usuario, string password)
+        public ActionResult Form(ML.Usuario usuario)
         {
+            IFormFile file = Request.Form.Files["inpImagen"];
+
+            if (file != null)
+            {
+                usuario.Vendedor.Foto = Convert.ToBase64String(ConvertToBytes(file));
+            }
+
             if (ModelState.IsValid)
             {
-                IFormFile file = Request.Form.Files["inpImagen"];
-
-                if (file != null)
-                {
-                    usuario.Vendedor.Foto = Convert.ToBase64String(ConvertToBytes(file));
-                }
-
-                if (!string.IsNullOrEmpty(password))
-                {
-                    var bcrypt = new Rfc2898DeriveBytes(password, new byte[0], 10000, HashAlgorithmName.SHA256);
-                    usuario.Password = bcrypt.GetBytes(20);
-                }
-
                 ML.Result result;
 
                 if (usuario.IdUsuario == 0)
                 {
-                    if (usuario.Password != null)
-                    {
-                        usuario.Estatus = true;
-                    }
-                    else
-                    {
-                        usuario.Estatus = false;
-                    }
                     // Add
                     result = BL.Usuario.Add(usuario);
                 }
                 else
                 {
-                    if (usuario.Password != null)
-                    {
-                        usuario.Estatus = true;
-                    }
-                    else
-                    {
-                        usuario.Estatus = false;
-                    }
                     // Update
                     result = BL.Usuario.Update(usuario);
                 }
@@ -381,94 +431,9 @@ namespace PL.Controllers
             }
         }
 
-        [HttpGet]
-        public ActionResult CambiarPassword()
+        public IActionResult Json()
         {
             return View();
-        }
-
-        [HttpPost]
-        public ActionResult CambiarPassword(string email)
-        {
-            ML.Result result = BL.Usuario.FindByEmail(email);
-            if (result.Correct)
-            {
-                string emailOrigen = _configuration["emailOrigen"];
-
-                MailMessage mailMessage = new MailMessage(emailOrigen, email, "Recuperar Contraseña", "<p>Correo para recuperar contraseña</p>");
-                mailMessage.IsBodyHtml = true;
-                //string contenidoHTML = System.IO.File.ReadAllText(configuration["contenidoHTML"]);
-                string contenidoHTML = System.IO.File.ReadAllText(Path.Combine(_hostingEnvironment.ContentRootPath, "wwwroot", "Templates", "Email.cshtml"));
-                mailMessage.Body = contenidoHTML;
-                string url = _configuration["url"] + HttpUtility.UrlEncode(email);
-                mailMessage.Body = mailMessage.Body.Replace("{link}", url);
-                SmtpClient smtpClient = new SmtpClient("smtp.gmail.com");
-                smtpClient.EnableSsl = true;
-                smtpClient.UseDefaultCredentials = false;
-                smtpClient.Port = 587;
-                smtpClient.Credentials = new System.Net.NetworkCredential(emailOrigen, _configuration["appPassword"]);
-
-                smtpClient.Send(mailMessage);
-                smtpClient.Dispose();
-
-                ViewBag.Modal = "show";
-                ViewBag.Message = "Se ha enviado un correo de confirmación a tu correo electronico";
-                return View();
-            }
-            else
-            {
-                ViewBag.Modal = "show";
-                ViewBag.Mensaje = "El correo es incorrecto";
-                return View();
-            }
-        }
-
-        [HttpGet]
-        public ActionResult Email()
-        {
-            return View();
-        }
-
-        [HttpGet]
-        public ActionResult NewPassword(string email)
-        {
-            ML.Usuario usuario = new ML.Usuario();
-            usuario.Vendedor = new ML.Vendedor();
-            usuario.Vendedor.Email = email;
-
-            return View(usuario);
-        }
-
-        [HttpPost]
-        public ActionResult NewPassword(ML.Usuario usuario, string password)
-        {
-            var bcrypt = new Rfc2898DeriveBytes(password, new byte[0], 10000, HashAlgorithmName.SHA256);
-
-            var passwordHash = bcrypt.GetBytes(20);
-            usuario.Password = passwordHash;
-
-            ML.Result result = BL.Usuario.Update(usuario);
-
-            if (result.Correct)
-            {
-                ViewBag.Modal = "show";
-                ViewBag.Message = "Se ha actualizado correctamente";
-                return RedirectToAction("Login", "Usuario");
-            }
-            else
-            {
-                ViewBag.Modal = "show";
-                ViewBag.Mensaje = "Error al actualizar la contraseña";
-                return View();
-            }
-        }
-
-        [HttpPost]
-        public IActionResult Logout()
-        {
-            _httpContextAccessor.HttpContext.Session.Clear();
-
-            return RedirectToAction("Login");
         }
     }
 }

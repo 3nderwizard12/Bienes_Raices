@@ -1,18 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
-using System.Security.Cryptography;
 
 namespace PL.Controllers
 {
     public class ClienteController : Controller
     {
-        private IHostingEnvironment environment;
-        private IConfiguration configuration;
+        [Obsolete]
+        private IHostingEnvironment _environment;
+        private IConfiguration _configuration;
+        private readonly IWebHostEnvironment _hostingEnvironment;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ClienteController(IHostingEnvironment _environment, IConfiguration _configuration)
+        [Obsolete]
+        public ClienteController(IHttpContextAccessor httpContextAccessor, IWebHostEnvironment hostingEnvironment, IHostingEnvironment environment, IConfiguration configuration)
         {
-            environment = _environment;
-            configuration = _configuration;
+            _httpContextAccessor = httpContextAccessor;
+            _hostingEnvironment = hostingEnvironment;
+            _environment = environment;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -24,7 +29,7 @@ namespace PL.Controllers
 
             using (var client = new HttpClient())
             {
-                string urlApi = configuration["urlWebApi"];
+                string urlApi = _configuration["urlWebApi"];
 
                 string requestUri = $"Cliente/GetAll";
 
@@ -109,7 +114,7 @@ namespace PL.Controllers
                 ML.Result result = new ML.Result();
                 using (var client = new HttpClient())
                 {
-                    string urlApi = configuration["urlWebApi"];
+                    string urlApi = _configuration["urlWebApi"];
                     client.BaseAddress = new Uri(urlApi);
 
                     var responseTask = client.GetAsync("Usuario/GetById/" + idCliente);
@@ -138,57 +143,96 @@ namespace PL.Controllers
         [HttpPost]
         public ActionResult Form(ML.Cliente cliente)
         {
-
-            if (cliente.IdCliente == 0)
+            int idVendedor = (int)_httpContextAccessor.HttpContext.Session.GetInt32("Id");
+            if (ModelState.IsValid)
             {
-                //add
-                using (var client = new HttpClient())
+                
+                cliente.Vendedor.IdVendedor = idVendedor;
+                if (cliente.IdCliente == 0)
                 {
-                    string urlApi = configuration["urlWebApi"];
-                    client.BaseAddress = new Uri(urlApi);
-
-                    var postTask = client.PostAsJsonAsync<ML.Cliente>("Cliente/Add/", cliente);
-
-                    postTask.Wait();
-
-                    var result = postTask.Result;
-
-                    if (result.IsSuccessStatusCode)
+                    //add
+                    using (var client = new HttpClient())
                     {
-                        ViewBag.Message = "Registro correctamente insertado";
-                        return PartialView("Modal");
+                        string urlApi = _configuration["urlWebApi"];
+                        client.BaseAddress = new Uri(urlApi);
+
+                        var postTask = client.PostAsJsonAsync<ML.Cliente>("Cliente/Add/", cliente);
+
+                        postTask.Wait();
+
+                        var result = postTask.Result;
+
+                        if (result.IsSuccessStatusCode)
+                        {
+                            ViewBag.Message = "Registro correctamente insertado";
+                            return PartialView("Modal");
+                        }
+                        else
+                        {
+                            ViewBag.Message = "Ocurrio un error al Insertar el registro";
+                            return PartialView("Modal");
+                        }
                     }
-                    else
+                }
+                else
+                {
+                    //update
+                    using (var client = new HttpClient())
                     {
-                        ViewBag.Message = "Ocurrio un error al Insertar el registro";
-                        return PartialView("Modal");
+                        string urlApi = _configuration["urlWebApi"];
+                        client.BaseAddress = new Uri(urlApi);
+
+                        var postTask = client.PutAsJsonAsync<ML.Cliente>("Cliente/Update/" + cliente.IdCliente, cliente);
+                        postTask.Wait();
+
+                        var result = postTask.Result;
+
+                        if (result.IsSuccessStatusCode)
+                        {
+                            ViewBag.Message = "Registro correctamente actualizado";
+                            return PartialView("Modal");
+                        }
+                        else
+                        {
+                            ViewBag.Message = "Ocurrio un error al actualizar el actualizado";
+                            return PartialView("Modal");
+                        }
                     }
                 }
             }
             else
             {
-                //update
-                using (var client = new HttpClient())
+                ML.Result resultMetodoPago = BL.MetodoPago.GetAll();
+                ML.Result resultEstatusContrato = BL.Estatus_Contrato.GetAll();
+                ML.Result resultEstatus = BL.Estatus.GetAll();
+
+                cliente = new ML.Cliente
                 {
-                    string urlApi = configuration["urlWebApi"];
-                    client.BaseAddress = new Uri(urlApi);
-
-                    var postTask = client.PutAsJsonAsync<ML.Cliente>("Cliente/Update/" + cliente.IdCliente, cliente);
-                    postTask.Wait();
-
-                    var result = postTask.Result;
-
-                    if (result.IsSuccessStatusCode)
+                    Vendedor = new ML.Vendedor(),
+                    Direccion = new ML.Direccion(),
+                    Contrato = new ML.Contrato
                     {
-                        ViewBag.Message = "Registro correctamente actualizado";
-                        return PartialView("Modal");
+                        EstatusContrato = new ML.EstatusContrato(),
+                        Costo = new ML.Costo
+                        {
+                            Pago = new ML.Pago
+                            {
+                                MetodoPago = new ML.MetodoPago()
+                            }
+                        },
+                        Ubicacion = new ML.Ubicacion
+                        {
+                            Estatus = new ML.Estatus(),
+                            Colaborador = new ML.Colaborador()
+                        }
                     }
-                    else
-                    {
-                        ViewBag.Message = "Ocurrio un error al actualizar el actualizado";
-                        return PartialView("Modal");
-                    }
-                }
+                };
+
+                cliente.Contrato.Costo.Pago.MetodoPago.MetodosPago = resultMetodoPago.Objects;
+                cliente.Contrato.EstatusContrato.EstatusContratos = resultEstatusContrato.Objects;
+                cliente.Contrato.Ubicacion.Estatus.Estatuses = resultEstatus.Objects;
+
+                return View(cliente);
             }
         }
 
@@ -197,7 +241,7 @@ namespace PL.Controllers
         {
             using (var client = new HttpClient())
             {
-                string urlApi = configuration["urlWebApi"];
+                string urlApi = _configuration["urlWebApi"];
                 client.BaseAddress = new Uri(urlApi);
 
                 var postTask = client.GetAsync("Cliente/Delete/" + idCliente);

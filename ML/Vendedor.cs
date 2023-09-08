@@ -8,7 +8,7 @@ namespace ML
 
         [Required(ErrorMessage = "El campo Nombre no puede estar vacio")]
         [StringLength(50, ErrorMessage = "El Nombre no puede ser mayor a 50")]
-        [RegularExpression("^[a-zA-Z\\s\\.]{3,50}$", ErrorMessage = "sin espacion y solo letras")]
+        [RegularExpression("^[a-zA-Z\\s\\.]{3,50}$", ErrorMessage = "Solo letras")]
         public string Nombre { get; set; } = null!;
 
         [Required(ErrorMessage = "El campo Apellido Paterno no puede estar vacio")]
@@ -33,7 +33,7 @@ namespace ML
         public string? Foto { get; set; }
 
         [Required(ErrorMessage = "El campo Email no puede estar vacio")]
-        [StringLength(255, ErrorMessage = "El ApellidoMaterno no puede ser mayor a 255")]
+        [StringLength(50, ErrorMessage = "El ApellidoMaterno no puede ser mayor a 50")]
         [EmailAddress(ErrorMessage = "El Email que ingreso no es valido")]
         [RegularExpression("^\\S+@\\S+\\.\\S+$", ErrorMessage = "El Email que ingreso no es valido")]
         public string Email { get; set; } = null!;

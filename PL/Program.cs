@@ -1,5 +1,11 @@
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddControllers(options =>
+{
+    options.RespectBrowserAcceptHeader = true; // Enable support for Accept: application/xml header
+})
+.AddXmlSerializerFormatters();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -13,7 +19,11 @@ builder.Services.AddSession(options =>
 });
 
 builder.Services.AddControllersWithViews();
+
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddControllers(
+    options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
 
 var app = builder.Build();
 
@@ -30,6 +40,8 @@ else
 
 app.UseStaticFiles();
 
+app.UseStaticFiles();
+
 app.UseRouting();
 
 app.UseSession();
@@ -39,14 +51,14 @@ app.UseAuthorization();
 app.UseEndpoints(endpoints =>
 {
     app.MapControllerRoute(
-        name: "NewPassword",
-        pattern: "Usuario/NewPassword/{email}",
-        defaults: new { controller = "Usuario", Action = "NewPassword" });
-
-
-    app.MapControllerRoute(
         name: "default",
         pattern: "{controller=Usuario}/{action=Login}/{id?}");
+
+    endpoints.MapControllerRoute(
+        name: "pdf",
+        pattern: "Pdf/{action=Index}/{id?}",
+        defaults: new { controller = "Pdf" }
+    );
 });
 
 app.Run();

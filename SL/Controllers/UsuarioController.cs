@@ -21,25 +21,6 @@ namespace SL.Controllers
             else { return NotFound(result); }
         }
 
-        [HttpGet("GetAny")]
-        public IActionResult GetAll([FromQuery] string nombre, [FromQuery] string apellidoPaterno, [FromQuery] string apellidoMaterno)
-        {
-            ML.Usuario usuario = new ML.Usuario();
-            usuario.Vendedor = new ML.Vendedor();
-
-            usuario.Vendedor.Nombre = nombre;
-            usuario.Vendedor.ApellidoPaterno = apellidoPaterno;
-            usuario.Vendedor.ApellidoMaterno = apellidoMaterno;
-
-            ML.Result result = BL.Usuario.GetAll(usuario);
-
-            if (result.Correct)
-            {
-                return Ok(result.Objects);
-            }
-            else { return NotFound(result); }
-        }
-
         [HttpPost("Add")]
         public IActionResult Add([FromBody] ML.Usuario usuario)
         {
@@ -91,22 +72,5 @@ namespace SL.Controllers
             }
             else { return NotFound(result); }
         }
-
-        //[HttpGet("GetByUserName/{userName},{password}")]
-        //public IActionResult GetByUserName(string username, string password)
-        //{
-        //    ML.Result result = BL.Usuario.GetByUsername(username);
-
-        //    if (result.Correct)
-        //    {
-        //        ML.Usuario usuario = (ML.Usuario)result.Object;
-        //        if (password == usuario.Password)
-        //        {
-        //            return Ok(result.Object);
-        //        }
-        //        else { return NotFound(); }
-        //    }
-        //    else { return NotFound(); }
-        //}
     }
 }

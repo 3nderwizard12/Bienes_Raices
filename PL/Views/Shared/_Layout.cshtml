@@ -37,6 +37,9 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Cliente" asp-action="GetAll">Cliente</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="PDf">Guia de uso</a>
+                            </li>
                         </ul>
                     }
                     else
@@ -48,10 +51,13 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Cliente" asp-action="GetAll">Cliente</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="PDf">Guia de uso</a>
+                            </li>
                         </ul>
                     }
 
-                    <a class="btn btn-danger text-dark" asp-area="" asp-controller="Usuario" asp-action="Login">Log Out</a>
+                    @Html.ActionLink("Log Out", "Logout", "Home", htmlAttributes: new { @class = "btn btn-danger" })
                 </div>
             </div>
         </nav>
