@@ -25,14 +25,6 @@
             </div>
 
             <div class="col">
-                @Html.LabelFor(model => model.Contrato.NumeroContrato, new { @class = "visually-hidden" })
-
-                @Html.TextBoxFor(model => model.Contrato.NumeroContrato, new { @class = "visually-hidden form-control" })
-
-                @Html.ValidationMessageFor(model => model.Contrato.NumeroContrato, null, new { @class = "text-danger" })
-            </div>
-
-            <div class="col">
                 @Html.LabelFor(model => model.Contrato.Costo.Pago.IdPago, new { @class = "visually-hidden" })
 
                 @Html.TextBoxFor(model => model.Contrato.Costo.Pago.IdPago, new { @class = "visually-hidden form-control" })
@@ -95,13 +87,6 @@
             </div>
 
             <div class="row">
-                <div class="col">
-                    @Html.LabelFor(model => model.Vendedor.Nombre)
-
-                    @Html.TextBoxFor(model => model.Vendedor.Nombre, new { @class = "form-control" })
-
-                    @Html.ValidationMessageFor(model => model.Vendedor.Nombre, null, new { @class = "text-danger" })
-                </div>
 
                 <div class="col">
                     @Html.LabelFor(model => model.Direccion.Calle)
@@ -138,25 +123,18 @@
                 </div>
 
                 <div class="col">
-                    @Html.LabelFor(model => model.Contrato.Costo.Pago.Enganche)
-
-                    @Html.TextBoxFor(model => model.Contrato.Costo.Pago.Enganche, new { @class = "form-control" })
-
-                    @Html.ValidationMessageFor(model => model.Contrato.Costo.Pago.Enganche, null, new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
                     @Html.LabelFor(model => model.Contrato.Costo.Pago.DiasPago)
 
                     @Html.TextBoxFor(model => model.Contrato.Costo.Pago.DiasPago, new { @class = "form-control" })
 
                     @Html.ValidationMessageFor(model => model.Contrato.Costo.Pago.DiasPago, null, new { @class = "text-danger" })
                 </div>
+            </div>
+
+            <div class="row">
 
                 <div class="col">
-                    @Html.LabelFor(model => model.Contrato.Costo.Pago.MetodoPago.IdMetodoPago)
+                    @Html.LabelFor(model => model.Contrato.Costo.Pago.MetodoPago)
                     <div class="input-group">
                         @Html.DropDownListFor(model => model.Contrato.Costo.Pago.MetodoPago.IdMetodoPago, new SelectList(Model.Contrato.Costo.Pago.MetodoPago.MetodosPago, "IdMetodoPago", "Nombre"), "Selecciona una opción", new { @class = "form-control" })
 
@@ -243,7 +221,7 @@
                 </div>
 
                 <div class="col">
-                    @Html.LabelFor(model => model.Contrato.EstatusContrato.IdEstatusContrato)
+                    @Html.LabelFor(model => model.Contrato.EstatusContrato)
                     <div class="input-group">
                         @Html.DropDownListFor(model => model.Contrato.EstatusContrato.IdEstatusContrato, new SelectList(Model.Contrato.EstatusContrato.EstatusContratos, "IdEstatusContrato", "Nombre"), "Selecciona una opción", new { @class = "form-control" })
 
@@ -278,7 +256,7 @@
                 </div>
 
                 <div class="col">
-                    @Html.LabelFor(model => model.Contrato.Ubicacion.Estatus.IdEstatus)
+                    @Html.LabelFor(model => model.Contrato.Ubicacion.Estatus)
                     <div class="input-group">
                         @Html.DropDownListFor(model => model.Contrato.Ubicacion.Estatus.IdEstatus, new SelectList(Model.Contrato.Ubicacion.Estatus.Estatuses, "IdEstatus", "Nombre"), "Selecciona una opción", new { @class = "form-control" })
 

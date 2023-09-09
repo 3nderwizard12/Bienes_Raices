@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BL
 {
     public class Usuario
-	{
+    {
         public static ML.Result Add(ML.Usuario usuario)
         {
             ML.Result result = new ML.Result();
@@ -13,9 +13,24 @@ namespace BL
             {
                 using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
                 {
-                    int query = cnn.Database.ExecuteSqlRaw($"UsuarioAdd" +
-                        $" '{usuario.Vendedor.Nombre}', '{usuario.Vendedor.ApellidoPaterno}', '{usuario.Vendedor.ApellidoMaterno}', '{usuario.Vendedor.Curp}', '{usuario.Vendedor.Rfc}', '{usuario.Vendedor.Foto}', '{usuario.Vendedor.Email}', '{usuario.Vendedor.Celular}'," +
-                        $" '{usuario.Username}', {usuario.Rol.IdRol}");
+                    //int query = cnn.Database.ExecuteSqlRaw($"UsuarioAdd" +
+                    //    $" '{usuario.Vendedor.Nombre}', '{usuario.Vendedor.ApellidoPaterno}', '{usuario.Vendedor.ApellidoMaterno}', '{usuario.Vendedor.Curp}', '{usuario.Vendedor.Rfc}', '{usuario.Vendedor.Foto}', '{usuario.Vendedor.Email}', '{usuario.Vendedor.Celular}'," +
+                    //    $" '{usuario.Username}', {usuario.Rol.IdRol}");
+
+                    string sqlCommand = "INSERT INTO Usuario (Nombre, ApellidoPaterno, ApellidoMaterno, Curp, Rfc, Foto, Email, Celular, Username, IdRol) " +
+                   "VALUES (@Nombre, @ApellidoPaterno, @ApellidoMaterno, @Curp, @Rfc, @Foto, @Email, @Celular, @Username, @IdRol)";
+
+                    int query = cnn.Database.ExecuteSqlRaw(sqlCommand,
+                        new SqlParameter("@Nombre", usuario.Vendedor.Nombre),
+                        new SqlParameter("@ApellidoPaterno", usuario.Vendedor.ApellidoPaterno),
+                        new SqlParameter("@ApellidoMaterno", usuario.Vendedor.ApellidoMaterno),
+                        new SqlParameter("@Curp", usuario.Vendedor.Curp),
+                        new SqlParameter("@Rfc", usuario.Vendedor.Rfc ?? (object)DBNull.Value),
+                        new SqlParameter("@Foto", usuario.Vendedor.Foto ?? (object)DBNull.Value),
+                        new SqlParameter("@Email", usuario.Vendedor.Email),
+                        new SqlParameter("@Celular", usuario.Vendedor.Celular),
+                        new SqlParameter("@Username", usuario.Username),
+                        new SqlParameter("@IdRol", usuario.Rol.IdRol));
 
                     if (query > 0)
                     {

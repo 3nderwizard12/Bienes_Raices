@@ -7,7 +7,6 @@ namespace ML
 	{
         [Required(ErrorMessage = "El campo Celular no puede estar vacio")]
         [StringLength(20, ErrorMessage = "El Celular solo puede ser menor ni mayor a 20 numeros")]
-        [RegularExpression("^\\+?[1-9][0-9]{9}$", ErrorMessage = "sin espacion ni letras")]
         public string NumeroContrato { get; set; } = null!;
 
         [DataType(DataType.Date)]

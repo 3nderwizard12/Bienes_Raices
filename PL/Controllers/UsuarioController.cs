@@ -2,10 +2,8 @@
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 using System.Security.Cryptography;
 using System.Net.Http.Headers;
-using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using Azure;
-using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace PL.Controllers
 {
@@ -27,7 +25,7 @@ namespace PL.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetAllJson()
+        public ActionResult GetAll()
         {
             string username = _httpContextAccessor.HttpContext.Session.GetString("Username");
 
@@ -59,8 +57,6 @@ namespace PL.Controllers
                     var readTask = result.Content.ReadAsAsync<ML.Result>();
                     readTask.Wait();
 
-                    
-
                     foreach (var resultItem in readTask.Result.Objects)
                     {
                         ML.Usuario ResultItemList = Newtonsoft.Json.JsonConvert.DeserializeObject<ML.Usuario>(resultItem.ToString());
@@ -68,56 +64,6 @@ namespace PL.Controllers
                     }
                 }
             }
-            _httpContextAccessor.HttpContext.Session.SetString("Json", JsonConvert.SerializeObject(resultUsuario));
-
-            return View(resultUsuario);
-        }
-
-        [HttpGet]
-        public ActionResult GetAll()
-        {
-            string username = _httpContextAccessor.HttpContext.Session.GetString("Username");
-
-            if (string.IsNullOrEmpty(username))
-            {
-                return RedirectToAction("Login", "Usuario");
-            }
-
-            ML.Usuario resultUsuario = new ML.Usuario();
-            resultUsuario.Vendedor = new ML.Vendedor();
-
-            resultUsuario.Usuarios = new List<object>();
-
-            using (var client = new HttpClient())
-            {
-                string urlApi = _configuration["urlWebApi"];
-                string requestUri = "Usuario/GetAll";
-
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml")); // Specify XML accept header
-
-                var responseTask = client.GetAsync(new Uri(new Uri(urlApi), requestUri));
-                responseTask.Wait();
-
-                var result = responseTask.Result;
-
-                if (result.IsSuccessStatusCode)
-                {
-                    // Assuming the response content is XML
-                    var xmlContent = result.Content.ReadAsStringAsync().Result;
-
-                    // Deserialize XML using XmlSerializer
-                    var serializer = new System.Xml.Serialization.XmlSerializer(typeof(List<ML.Usuario>));
-
-                    using (var reader = new StringReader(xmlContent))
-                    {
-
-                        var ResultItemList = (List<ML.Usuario>)serializer.Deserialize(reader);
-
-                        resultUsuario.Usuarios.Add(ResultItemList);
-                    }
-                }
-            }
-
             return View(resultUsuario);
         }
 
@@ -431,9 +377,55 @@ namespace PL.Controllers
             }
         }
 
-        public IActionResult Json()
+        [HttpGet]
+        public ActionResult XML()
         {
-            return View();
+            string username = _httpContextAccessor.HttpContext.Session.GetString("Username");
+
+            if (string.IsNullOrEmpty(username))
+            {
+                return RedirectToAction("Login", "Usuario");
+            }
+
+            ML.Usuario resultUsuario = new ML.Usuario();
+            resultUsuario.Vendedor = new ML.Vendedor();
+
+            resultUsuario.Usuarios = new List<object>();
+
+            using (var client = new HttpClient())
+            {
+                string urlApi = _configuration["urlWebApi"];
+
+                string requestUri = $"Usuario/GetAll";
+
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+
+                var responseTask = client.GetAsync(new Uri(new Uri(urlApi), requestUri));
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadAsAsync<ML.Result>();
+                    readTask.Wait();
+
+                    foreach (var resultItem in readTask.Result.Objects)
+                    {
+                        ML.Usuario ResultItemList = Newtonsoft.Json.JsonConvert.DeserializeObject<ML.Usuario>(resultItem.ToString());
+                        resultUsuario.Usuarios.Add(ResultItemList);
+                    }
+                }
+            }
+
+            var serializer = new XmlSerializer(typeof(ML.Usuario));
+            var writer = new StringWriter();
+            serializer.Serialize(writer, resultUsuario);
+
+            _httpContextAccessor.HttpContext.Session.SetString("XML", writer.ToString());
+            _httpContextAccessor.HttpContext.Session.SetString("Json", JsonConvert.SerializeObject(resultUsuario));
+
+            return View(resultUsuario);
         }
     }
 }

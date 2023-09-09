@@ -1,8 +1,5 @@
 ﻿@page
 @{
-    ViewBag.Title = "Json";
-    //Layout = "~/Views/Shared/_Layout.cshtml";
-    Layout = null;
 }
 
 @using Microsoft.AspNetCore.Http;
@@ -11,4 +8,6 @@
     string json = HttpContextAccessor.HttpContext.Session.GetString("Json");
 }
 
-<a>@json</a>
+<body>
+    <a>@Json</a>
+</body>

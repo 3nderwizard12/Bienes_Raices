@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace PL.Controllers
@@ -50,6 +51,8 @@ namespace PL.Controllers
                     }
                 }
             }
+            _httpContextAccessor.HttpContext.Session.SetString("Json", JsonConvert.SerializeObject(resultCliente));
+
             return View(resultCliente);
         }
 
@@ -143,62 +146,37 @@ namespace PL.Controllers
         [HttpPost]
         public ActionResult Form(ML.Cliente cliente)
         {
+            cliente.Vendedor = new ML.Vendedor();
+
             int idVendedor = (int)_httpContextAccessor.HttpContext.Session.GetInt32("Id");
+            cliente.Vendedor.IdVendedor = idVendedor;
+
             if (ModelState.IsValid)
             {
-                
-                cliente.Vendedor.IdVendedor = idVendedor;
+                //add
+                ML.Result result;
+
                 if (cliente.IdCliente == 0)
                 {
-                    //add
-                    using (var client = new HttpClient())
-                    {
-                        string urlApi = _configuration["urlWebApi"];
-                        client.BaseAddress = new Uri(urlApi);
-
-                        var postTask = client.PostAsJsonAsync<ML.Cliente>("Cliente/Add/", cliente);
-
-                        postTask.Wait();
-
-                        var result = postTask.Result;
-
-                        if (result.IsSuccessStatusCode)
-                        {
-                            ViewBag.Message = "Registro correctamente insertado";
-                            return PartialView("Modal");
-                        }
-                        else
-                        {
-                            ViewBag.Message = "Ocurrio un error al Insertar el registro";
-                            return PartialView("Modal");
-                        }
-                    }
+                    // Add
+                    result = BL.Cliente.Add(cliente);
                 }
                 else
                 {
-                    //update
-                    using (var client = new HttpClient())
-                    {
-                        string urlApi = _configuration["urlWebApi"];
-                        client.BaseAddress = new Uri(urlApi);
-
-                        var postTask = client.PutAsJsonAsync<ML.Cliente>("Cliente/Update/" + cliente.IdCliente, cliente);
-                        postTask.Wait();
-
-                        var result = postTask.Result;
-
-                        if (result.IsSuccessStatusCode)
-                        {
-                            ViewBag.Message = "Registro correctamente actualizado";
-                            return PartialView("Modal");
-                        }
-                        else
-                        {
-                            ViewBag.Message = "Ocurrio un error al actualizar el actualizado";
-                            return PartialView("Modal");
-                        }
-                    }
+                    // Update
+                    result = BL.Cliente.Update(cliente);
                 }
+
+                if (result.Correct)
+                {
+                    ViewBag.Message = cliente.IdCliente == 0 ? "Registro correctamente insertado" : "Registro correctamente actualizado";
+                }
+                else
+                {
+                    ViewBag.Message = cliente.IdCliente == 0 ? "Ocurrio un error al insertar el registro" : "Ocurrio un error al actualizar el registro";
+                }
+
+                return View("Modal");
             }
             else
             {
@@ -260,6 +238,11 @@ namespace PL.Controllers
                     return PartialView("Modal");
                 }
             }
+        }
+
+        public ActionResult Json()
+        {
+            return View();
         }
     }
 }

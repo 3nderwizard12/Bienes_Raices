@@ -53,6 +53,7 @@
 
             <div style="float:left;">
                 @Html.ActionLink("Agregar", "Form", "Cliente", htmlAttributes: new { @class = "btn btn-success bi bi-person-plus-fill" })
+                @Html.ActionLink("Json", "Jaon", "Cliente", htmlAttributes: new { @class = "btn btn-info bi bi-filetype-Json" })
             </div>
         </div>
 
@@ -105,11 +106,6 @@
                         <td class="text-center" style="font-weight:bold;">Lote</td>
                         <td class="visually-hidden">IdEstatus</td>
                         <td class="text-center" style="font-weight:bold;">Estatus</td>
-                        <td class="visually-hidden">IdColaborador</td>
-                        <td class="text-center" style="font-weight:bold;">Nombre Colaborador</td>
-                        <td class="text-center" style="font-weight:bold;">Apellido Paterno Colaborador</td>
-                        <td class="text-center" style="font-weight:bold;">Apellido Materno Colaborador</td>
-                        <td class="text-center" style="font-weight:bold;">Segmento</td>
 
                         @*<td class="text-center" style=" font-weight:bold;">Eliminar</td>*@
                     </tr>
@@ -149,11 +145,6 @@
                             <td class="text-center">@cliente.Contrato.Ubicacion.Lote</td>
                             <td class="visually-hidden">@cliente.Contrato.Ubicacion.Estatus.IdEstatus</td>
                             <td class="text-center">@cliente.Contrato.Ubicacion.Estatus.Nombre</td>
-                            <td class="visually-hidden">@cliente.Contrato.Ubicacion.Colaborador.IdColaborador</td>
-                            <td class="text-center">@cliente.Contrato.Ubicacion.Colaborador.Nombre</td>
-                            <td class="text-center">@cliente.Contrato.Ubicacion.Colaborador.ApellidoPaterno</td>
-                            <td class="text-center">@cliente.Contrato.Ubicacion.Colaborador.ApellidoMaterno</td>
-                            <td class="text-center">@cliente.Contrato.Ubicacion.Colaborador.Segmento</td>
                             @*<td class="text-center"><a class="btn btn-danger bi bi-trash" href="@Url.Action("Delete", "Usuario", new { idUsuario = usuario.IdUsuario})" onclick="return confirm('Estas seguro que deseas eliminar este registro?');"></a></td>*@
                         </tr>
                     }

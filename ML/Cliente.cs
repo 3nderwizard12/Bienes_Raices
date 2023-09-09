@@ -22,7 +22,6 @@ namespace ML
         public string ApellidoMaterno { get; set; } = null!;
 
         [Range(18, 80, ErrorMessage = "Solo puede ingresar mayor 18 y menor a 80")]
-        [StringLength(2, ErrorMessage = "La edad no puede ser mayor a 2 digitos")]
         public int? Edad { get; set; }
 
         [Required(ErrorMessage = "El campo Telefono no puede estar vacio")]

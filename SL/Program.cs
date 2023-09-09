@@ -7,6 +7,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddControllers(options =>
+{
+    options.RespectBrowserAcceptHeader = true; // Enable support for Accept: application/xml header
+})
+.AddXmlSerializerFormatters();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
