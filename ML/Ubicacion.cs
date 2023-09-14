@@ -23,8 +23,6 @@ namespace ML
 
         public ML.Estatus? Estatus { get; set; }
 
-        public ML.Colaborador? Colaborador { get; set; }
-
         public List<object>? Ubicacaciones { get; set; }
     }
 }

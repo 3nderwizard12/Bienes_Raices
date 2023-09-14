@@ -146,11 +146,6 @@ namespace PL.Controllers
         [HttpPost]
         public ActionResult Form(ML.Cliente cliente)
         {
-            cliente.Vendedor = new ML.Vendedor();
-
-            int idVendedor = (int)_httpContextAccessor.HttpContext.Session.GetInt32("Id");
-            cliente.Vendedor.IdVendedor = idVendedor;
-
             if (ModelState.IsValid)
             {
                 //add
@@ -159,6 +154,11 @@ namespace PL.Controllers
                 if (cliente.IdCliente == 0)
                 {
                     // Add
+                    cliente.Vendedor = new ML.Vendedor();
+
+                    int idVendedor = (int)_httpContextAccessor.HttpContext.Session.GetInt32("Id");
+                    cliente.Vendedor.IdVendedor = idVendedor;
+
                     result = BL.Cliente.Add(cliente);
                 }
                 else

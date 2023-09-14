@@ -13,18 +13,13 @@ namespace BL
             {
                 using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
                 {
-                    //int query = cnn.Database.ExecuteSqlRaw($"ClienteAdd" +
-                    //    $" '{cliente.Nombre}', '{cliente.ApellidoPaterno}', '{cliente.ApellidoMaterno}', {cliente.Edad}, '{cliente.Telefono}', '{cliente.Observaciones}', {cliente.Vendedor.IdVendedor}," +
-                    //    $" '{cliente.Direccion.Calle}', '{cliente.Direccion.NumeroInterior}', '{cliente.Direccion.Numeroexterior}'," +
-                    //    $" {cliente.Contrato.Costo.Pago.Enganche}, '{cliente.Contrato.Costo.Pago.DiasPago}', {cliente.Contrato.Costo.Pago.MetodoPago.IdMetodoPago}, {cliente.Contrato.Costo.Pago.Intereses}, {cliente.Contrato.Costo.Pago.MensualidadMinima}," +
-                    //    $" '{cliente.Contrato.Costo.Letras}', {cliente.Contrato.Costo.CostoTotal}, {cliente.Contrato.Costo.TotalxMetro}, {cliente.Contrato.Costo.CostoxMetro}," +
-                    //    $" '{cliente.Contrato.NumeroContrato}', '{cliente.Contrato.FechaInicioContrato}', '{cliente.Contrato.FechaFinContrato}', {cliente.Contrato.EstatusContrato.IdEstatusContrato}," +
-                    //    $" '{cliente.Contrato.Ubicacion.Desarrollo}', '{cliente.Contrato.Ubicacion.Manzana}', '{cliente.Contrato.Ubicacion.Lote}', {cliente.Contrato.Ubicacion.Estatus.IdEstatus},");
-
-                    string sqlCommand = "INSERT INTO Cliente (Nombre, ApellidoPaterno, ApellidoMaterno, Edad, Telefono, Observaciones, IdVendedor, Calle, NumeroInterior, NumeroExterior, Enganche, DiasPago, IdMetodoPago, Intereses, MensualidadMinima, Letras, CostoTotal, TotalxMetro, CostoxMetro, NumeroContrato, FechaInicioContrato, FechaFinContrato, IdEstatusContrato, Desarrollo, Manzana, Lote, IdEstatus) " +
-                   "VALUES (@Nombre, @ApellidoPaterno, @ApellidoMaterno, @Edad, @Telefono, @Observaciones, @IdVendedor, @Calle, @NumeroInterior, @NumeroExterior, @Enganche, @DiasPago, @IdMetodoPago, @Intereses, @MensualidadMinima, @Letras, @CostoTotal, @TotalxMetro, @CostoxMetro, @NumeroContrato, @FechaInicioContrato, @FechaFinContrato, @IdEstatusContrato, @Desarrollo, @Manzana, @Lote, @IdEstatus)";
-
-                    int query = cnn.Database.ExecuteSqlRaw(sqlCommand,
+                    int query = cnn.Database.ExecuteSqlRaw("EXEC ClienteAdd " +
+                        "@Nombre, @ApellidoPaterno, @ApellidoMaterno, @Edad, @Telefono, @Observaciones, @IdVendedor, " +
+                        "@Calle, @NumeroInterior, @NumeroExterior, " +
+                        "@Enganche, @DiasPago, @IdMetodoPago, @Intereses, @MensualidadMinima, " +
+                        "@Letras, @CostoTotal, @TotalxMetro, @CostoxMetro, " +
+                        "@NumeroContrato, @FechaInicioContrato, @FechaFinContrato, @IdEstatusContrato, " +
+                        "@Desarrollo, @Manzana, @Lote, @IdEstatus",
                         new SqlParameter("@Nombre", cliente.Nombre),
                         new SqlParameter("@ApellidoPaterno", cliente.ApellidoPaterno),
                         new SqlParameter("@ApellidoMaterno", cliente.ApellidoMaterno),
@@ -104,50 +99,41 @@ namespace BL
             {
                 using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
                 {
-                    int query = cnn.Database.ExecuteSqlRaw($"ClienteAdd" +
-                        $" {cliente.IdCliente}, '{cliente.Nombre}', '{cliente.ApellidoPaterno}', '{cliente.ApellidoMaterno}', '{cliente.Edad}', '{cliente.Telefono}', '{cliente.Observaciones}', {cliente.Vendedor.IdVendedor}," +
-                        $" '{cliente.Direccion.Calle}', '{cliente.Direccion.NumeroInterior}', '{cliente.Direccion.Numeroexterior}'," +
-                        $" '{cliente.Contrato.Costo.Pago.Enganche}', '{cliente.Contrato.Costo.Pago.DiasPago}', {cliente.Contrato.Costo.Pago.MetodoPago.IdMetodoPago}, '{cliente.Contrato.Costo.Pago.MensualidadMinima}'," +
-                        $" '{cliente.Contrato.Costo.Letras}', '{cliente.Contrato.Costo.CostoTotal}', '{cliente.Contrato.Costo.TotalxMetro}', '{cliente.Contrato.Costo.CostoxMetro}'," +
-                        $" '{cliente.Contrato.NumeroContrato}', '{cliente.Contrato.FechaInicioContrato}', '{cliente.Contrato.FechaFinContrato}', {cliente.Contrato.EstatusContrato.IdEstatusContrato}," +
-                        $" '{cliente.Contrato.Ubicacion.Desarrollo}', ''{cliente.Contrato.Ubicacion.Manzana}', '{cliente.Contrato.Ubicacion.Lote}', {cliente.Contrato.Ubicacion.Estatus.IdEstatus},");
-
-                    int queryStored = cnn.Database.ExecuteSqlRaw(
-                        "EXEC ClienteUpdate " +
+                    int query = cnn.Database.ExecuteSqlRaw("EXEC ClienteUpdate " +
                         "@IdCliente, @Nombre, @ApellidoPaterno, @ApellidoMaterno, @Edad, @Telefono, @Observaciones, @IdVendedor, " +
                         "@Calle, @NumeroInterior, @NumeroExterior, " +
-                        "@Enganche, @DiasPago, @IdMetodoPago, @MensualidadMinima, " +
+                        "@Enganche, @DiasPago, @IdMetodoPago, @Intereses, @MensualidadMinima, " +
                         "@Letras, @CostoTotal, @TotalxMetro, @CostoxMetro, " +
                         "@NumeroContrato, @FechaInicioContrato, @FechaFinContrato, @IdEstatusContrato, " +
                         "@Desarrollo, @Manzana, @Lote, @IdEstatus",
-                        new SqlParameter("@IdCliente", cliente.IdCliente),
+                        new SqlParameter("IdCliente", cliente.IdCliente),
                         new SqlParameter("@Nombre", cliente.Nombre),
                         new SqlParameter("@ApellidoPaterno", cliente.ApellidoPaterno),
                         new SqlParameter("@ApellidoMaterno", cliente.ApellidoMaterno),
-                        new SqlParameter("@Edad", cliente.Edad),
+                        new SqlParameter("@Edad", cliente.Edad ?? (object)DBNull.Value),
                         new SqlParameter("@Telefono", cliente.Telefono),
-                        new SqlParameter("@Observaciones", cliente.Observaciones),
+                        new SqlParameter("@Observaciones", cliente.Observaciones ?? (object)DBNull.Value),
                         new SqlParameter("@IdVendedor", cliente.Vendedor.IdVendedor),
                         new SqlParameter("@Calle", cliente.Direccion.Calle),
-                        new SqlParameter("@NumeroInterior", cliente.Direccion.NumeroInterior),
+                        new SqlParameter("@NumeroInterior", cliente.Direccion.NumeroInterior ?? (object)DBNull.Value),
                         new SqlParameter("@NumeroExterior", cliente.Direccion.Numeroexterior),
                         new SqlParameter("@Enganche", cliente.Contrato.Costo.Pago.Enganche),
                         new SqlParameter("@DiasPago", cliente.Contrato.Costo.Pago.DiasPago),
                         new SqlParameter("@IdMetodoPago", cliente.Contrato.Costo.Pago.MetodoPago.IdMetodoPago),
+                        new SqlParameter("@Intereses", cliente.Contrato.Costo.Pago.Intereses),
                         new SqlParameter("@MensualidadMinima", cliente.Contrato.Costo.Pago.MensualidadMinima),
-                        new SqlParameter("@Letras", cliente.Contrato.Costo.Letras),
+                        new SqlParameter("@Letras", cliente.Contrato.Costo.Letras ?? (object)DBNull.Value),
                         new SqlParameter("@CostoTotal", cliente.Contrato.Costo.CostoTotal),
                         new SqlParameter("@TotalxMetro", cliente.Contrato.Costo.TotalxMetro),
                         new SqlParameter("@CostoxMetro", cliente.Contrato.Costo.CostoxMetro),
                         new SqlParameter("@NumeroContrato", cliente.Contrato.NumeroContrato),
-                        new SqlParameter("@FechaInicioContrato", cliente.Contrato.FechaInicioContrato),
-                        new SqlParameter("@FechaFinContrato", cliente.Contrato.FechaFinContrato),
+                        new SqlParameter("@FechaInicioContrato", cliente.Contrato.FechaInicioContrato ?? (object)DBNull.Value),
+                        new SqlParameter("@FechaFinContrato", cliente.Contrato.FechaFinContrato ?? (object)DBNull.Value),
                         new SqlParameter("@IdEstatusContrato", cliente.Contrato.EstatusContrato.IdEstatusContrato),
                         new SqlParameter("@Desarrollo", cliente.Contrato.Ubicacion.Desarrollo),
                         new SqlParameter("@Manzana", cliente.Contrato.Ubicacion.Manzana),
                         new SqlParameter("@Lote", cliente.Contrato.Ubicacion.Lote),
-                        new SqlParameter("@IdEstatus", cliente.Contrato.Ubicacion.Estatus.IdEstatus)
-                        );
+                        new SqlParameter("@IdEstatus", cliente.Contrato.Ubicacion.Estatus.IdEstatus));
 
                     if (query > 0)
                     {
