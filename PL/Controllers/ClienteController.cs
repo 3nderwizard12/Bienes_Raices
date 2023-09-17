@@ -96,8 +96,7 @@ namespace PL.Controllers
                     },
                     Ubicacion = new ML.Ubicacion
                     {
-                        Estatus = new ML.Estatus(),
-                        Colaborador = new ML.Colaborador()
+                        Estatus = new ML.Estatus()
                     }
                 }
             };
@@ -200,8 +199,7 @@ namespace PL.Controllers
                         },
                         Ubicacion = new ML.Ubicacion
                         {
-                            Estatus = new ML.Estatus(),
-                            Colaborador = new ML.Colaborador()
+                            Estatus = new ML.Estatus()
                         }
                     }
                 };

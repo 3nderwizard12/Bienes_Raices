@@ -19,9 +19,9 @@ public partial class Cliente
 
     public string? Observaciones { get; set; }
 
-    //Vendedor
-
     public int IdVendedor { get; set; }
+
+    //Vendedor
 
     public string NombreVendedor { get; set; } = null!;
 

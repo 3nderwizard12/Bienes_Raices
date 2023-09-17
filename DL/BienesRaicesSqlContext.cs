@@ -17,8 +17,6 @@ public partial class BienesRaicesSqlContext : DbContext
 
     public virtual DbSet<Cliente> Clientes { get; set; }
 
-    public virtual DbSet<Colaborador> Colaboradors { get; set; }
-
     public virtual DbSet<Contrato> Contratos { get; set; }
 
     public virtual DbSet<Costo> Costos { get; set; }
@@ -73,29 +71,6 @@ public partial class BienesRaicesSqlContext : DbContext
                 .HasForeignKey(d => d.IdVendedor)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Cliente");
-        });
-
-        modelBuilder.Entity<Colaborador>(entity =>
-        {
-            entity.HasKey(e => e.IdColaborador);
-
-            entity.ToTable("Colaborador");
-
-            entity.Property(e => e.ApellidoMaterno)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.ApellidoPaterno)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.Nombre)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.Segmento).HasColumnName("segmento");
-
-            entity.HasOne(d => d.IdUbicacionNavigation).WithMany(p => p.Colaboradors)
-                .HasForeignKey(d => d.IdUbicacion)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Colaborador");
         });
 
         modelBuilder.Entity<Contrato>(entity =>
