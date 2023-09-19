@@ -2,7 +2,6 @@
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 using System.Security.Cryptography;
 using System.Net.Http.Headers;
-using Newtonsoft.Json;
 using System.Xml.Serialization;
 
 namespace PL.Controllers
@@ -423,7 +422,6 @@ namespace PL.Controllers
             serializer.Serialize(writer, resultUsuario);
 
             _httpContextAccessor.HttpContext.Session.SetString("XML", writer.ToString());
-            _httpContextAccessor.HttpContext.Session.SetString("Json", JsonConvert.SerializeObject(resultUsuario));
 
             return View(resultUsuario);
         }

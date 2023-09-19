@@ -4,6 +4,7 @@
     //Layout = "~/Views/Shared/_Layout.cshtml";
     Layout = null;
 }
+
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/PL.styles.css" asp-append-version="true" />
@@ -13,14 +14,11 @@
 @using Microsoft.AspNetCore.Http;
 @inject IHttpContextAccessor HttpContextAccessor
 @{
-    string json = HttpContextAccessor.HttpContext.Session.GetString("Json");
-
     string XML = HttpContextAccessor.HttpContext.Session.GetString("XML"); ;
 }
 
 <body>
 
-    <a>@json</a>
     <a>@XML</a>
 
     @foreach (ML.Usuario usuario in Model.Usuarios)

@@ -119,7 +119,7 @@ namespace PL.Controllers
                     string urlApi = _configuration["urlWebApi"];
                     client.BaseAddress = new Uri(urlApi);
 
-                    var responseTask = client.GetAsync("Usuario/GetById/" + idCliente);
+                    var responseTask = client.GetAsync("Cliente/GetById/" + idCliente);
                     responseTask.Wait();
 
                     var resultAPI = responseTask.Result;

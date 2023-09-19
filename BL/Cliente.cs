@@ -159,7 +159,7 @@ namespace BL
             {
                 using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
                 {
-                    var query = cnn.Clientes.FromSqlRaw($"UsuarioGetAll " +
+                    var query = cnn.Clientes.FromSqlRaw($"ClienteGetAll " +
                         $"'{cliente.Nombre}', '{cliente.ApellidoPaterno}', '{cliente.ApellidoMaterno}'").ToList();
 
                     result.Objects = new List<object>();
@@ -185,6 +185,7 @@ namespace BL
                                 Direccion = new ML.Direccion
                                 {
                                     IdDireccion = row.IdDireccion,
+                                    Calle = row.Calle,
                                     NumeroInterior = row.NumeroInterior,
                                     Numeroexterior = row.Numeroexterior
                                 },
@@ -195,7 +196,7 @@ namespace BL
                                     FechaFinContrato = row.FechaFinContrato.ToString(),
                                     EstatusContrato = new ML.EstatusContrato
                                     {
-                                        IdEstatusContrato = row.IdEstatusContrato,
+                                        IdEstatusContrato = row.IdEstatus_Contrato,
                                         Nombre = row.NombreEstatusContrato
                                     },
                                     Costo = new ML.Costo
@@ -280,6 +281,7 @@ namespace BL
                             Direccion = new ML.Direccion
                             {
                                 IdDireccion = query.IdDireccion,
+                                Calle = query.Calle,
                                 NumeroInterior = query.NumeroInterior,
                                 Numeroexterior = query.Numeroexterior
                             },
@@ -290,7 +292,7 @@ namespace BL
                                 FechaFinContrato = query.FechaFinContrato.ToString(),
                                 EstatusContrato = new ML.EstatusContrato
                                 {
-                                    IdEstatusContrato = query.IdEstatusContrato,
+                                    IdEstatusContrato = query.IdEstatus_Contrato,
                                     Nombre = query.NombreEstatusContrato
                                 },
                                 Costo = new ML.Costo
