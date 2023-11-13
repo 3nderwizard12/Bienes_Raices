@@ -3,6 +3,8 @@ using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 using System.Security.Cryptography;
 using System.Net.Http.Headers;
 using System.Xml.Serialization;
+using OfficeOpenXml;
+using Microsoft.EntityFrameworkCore;
 
 namespace PL.Controllers
 {
@@ -425,5 +427,84 @@ namespace PL.Controllers
 
             return View(resultUsuario);
         }
+
+        [HttpGet]
+        public ActionResult XMLToExcel()
+        {
+            try
+            {
+                // Ruta del archivo Excel de salida
+                string rutaArchivoExcel = "output.xlsx";
+
+                // Crear un nuevo documento Excel utilizando la biblioteca EPPlus
+                using (var package = new ExcelPackage())
+                {
+                    // Agregar una hoja de trabajo al libro
+                    var worksheet = package.Workbook.Worksheets.Add("Hoja1");
+                    using (DL.BienesRaicesSqlContext cnn = new DL.BienesRaicesSqlContext())
+                    {
+                        var query = cnn.Usuarios.FromSqlRaw($"UsuarioGetAll " +
+                            $"'{null}', '{null}', '{null}'").ToList();
+
+                        if (query != null)
+                        {
+                            worksheet.Cells[1, 1].Value = "IdUsuario";
+                            worksheet.Cells[1, 2].Value = "Username";
+                            worksheet.Cells[1, 3].Value = "Estatus";
+
+                            worksheet.Cells[1, 4].Value = "IdVendedor";
+                            worksheet.Cells[1, 5].Value = "Nombre";
+                            worksheet.Cells[1, 6].Value = "ApellidoPaterno";
+                            worksheet.Cells[1, 7].Value = "ApellidoMaterno";
+                            worksheet.Cells[1, 8].Value = "Curp";
+                            worksheet.Cells[1, 9].Value = "Rfc";
+                            worksheet.Cells[1, 10].Value = "Foto";
+                            worksheet.Cells[1, 11].Value = "Email";
+                            worksheet.Cells[1, 12].Value = "Celular";
+
+                            worksheet.Cells[1, 13].Value = "IdRol";
+                            worksheet.Cells[1, 14].Value = "NombreRol";
+
+                            int fila = 2;
+                            foreach (var row in query)
+                            {
+                                worksheet.Cells[fila, 1].Value = row.IdUsuario;
+                                worksheet.Cells[fila, 2].Value = row.Username;
+                                worksheet.Cells[fila, 3].Value = row.Estatus;
+                                
+                                worksheet.Cells[fila, 4].Value = row.IdVendedor;
+                                worksheet.Cells[fila, 5].Value = row.Nombre;
+                                worksheet.Cells[fila, 6].Value = row.ApellidoPaterno;
+                                worksheet.Cells[fila, 7].Value = row.ApellidoMaterno;
+                                worksheet.Cells[fila, 8].Value = row.Curp;
+                                worksheet.Cells[fila, 9].Value = row.Rfc;
+                                worksheet.Cells[fila, 10].Value = row.Foto;
+                                worksheet.Cells[fila, 11].Value = row.Email;
+                                worksheet.Cells[fila, 12].Value = row.Celular;
+
+                                worksheet.Cells[fila, 13].Value = row.IdRol;
+                                worksheet.Cells[fila, 14].Value = row.NombreRol;
+
+                                fila++;
+                            }
+                        }
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            package.SaveAs(memoryStream);
+                            memoryStream.Position = 0;
+
+                            // Devolver el archivo Excel como respuesta
+                            return File(memoryStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", rutaArchivoExcel);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Manejar errores aquí
+                return Content("Error: " + ex.Message);
+            }
+        }
+
     }
 }

@@ -17,6 +17,10 @@
     string XML = HttpContextAccessor.HttpContext.Session.GetString("XML"); ;
 }
 
+<div style="float:left;">
+    @Html.ActionLink("Descargar Registro", "XMLToExcel", "Usuario", htmlAttributes: new { @class = "btn btn-info bi bi-filetype-XML" })
+</div>
+
 <body>
 
     <a>@XML</a>
